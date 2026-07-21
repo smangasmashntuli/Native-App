@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "MyAndroidApp",
-    "slug": "MyAndroidApp",
+    "slug": "ntuliapps",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -15,10 +15,17 @@
         "foregroundImage": "./assets/android-icon-foreground.png",
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
-      }
+      },
+      "package": "com.sirntuli.ntuliapps"
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "59b9ba9f-fda0-4d2f-afeb-6502741a210f"
+      }
+    },
+    "owner": "sirntulis-team"
   }
 }
