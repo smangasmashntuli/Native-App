@@ -6,6 +6,8 @@ import { Octicons } from '@expo/vector-icons';
 import { View, Text, TouchableOpacity, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
+import {useAuth} from '../context/AuthContext';
+
 import {
     StyledContainer,
     InnerContainer,
@@ -17,7 +19,11 @@ import {
     StyledTextInput,
     StyledButton,
     ButtonText,
-    Colors
+    Colors,
+    ExtraText,
+    ExtraView,
+    TextLink,
+    TextLinkContent
 } from '../components/style';
 
 const { brand, darkLight, primary, tertiary } = Colors;
@@ -38,13 +44,26 @@ const MyTextInput = ({ label, icon, ...props }) => {
 
 const Login = () => {
     const navigation = useNavigation();
+    const { login, loading, error } = useAuth();
+    const [isLoading, setIsLoading] = useState(false);
 
-    const handleLogin = (values) => {
-        console.log(values);
-        if (values.email && values.password) {
-            navigation.navigate('Welcome');
-        } else {
-            Alert.alert('Error', 'Please enter both email and password');
+    const handleLogin = async (values) => {
+        setIsLoading(true);
+        try{
+            const result = await login ({
+                email: values.email,
+                password: values.password
+            });
+
+            if(result.success){
+                navigation.navigate('Welcome');
+            } else {
+                Alert.alert('Login Failed', result.error);
+            }
+        } catch(error){
+            Alert.alert('Login Failed', 'An unexpected error occurred. Please try again.');
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -83,9 +102,17 @@ const Login = () => {
                                 secureTextEntry={true}
                             />
                             
-                            <StyledButton onPress={handleSubmit}>
-                                <ButtonText>Login</ButtonText>
+                            <StyledButton onPress={handleSubmit} disabled={isLoading}>
+                                {isLoading ? (<ActivityIndicator size="small" color={primary}/>) : (<ButtonText>Login</ButtonText>)}
                             </StyledButton>
+
+                            <ExtraView>
+                                <ExtraText>Don't have an account? </ExtraText>
+                                <TextLink onPress={() => navigation.navigate('SignUp')}>
+                                    <TextLinkContent>Sign Up</TextLinkContent>
+                                </TextLink>
+                            </ExtraView>
+
                         </StyledFormArea>
                     )}
                 </Formik>
