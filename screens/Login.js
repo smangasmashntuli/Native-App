@@ -1,12 +1,11 @@
 // Login.js
-import React from 'react';
+import React, { useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { Formik } from 'formik';
 import { Octicons } from '@expo/vector-icons';
-import { View, Text, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-
-import {useAuth} from '../context/AuthContext';
+import { useAuth } from '../context/AuthContext';
 
 import {
     StyledContainer,
@@ -56,7 +55,7 @@ const Login = () => {
             });
 
             if(result.success){
-                navigation.navigate('Welcome');
+                navigation.navigate(result.needsSetup ? 'SetUp' : 'Welcome');
             } else {
                 Alert.alert('Login Failed', result.error);
             }

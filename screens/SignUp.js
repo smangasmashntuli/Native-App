@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { Formik } from 'formik';
 import { Octicons } from '@expo/vector-icons';
-import { View, Text, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import * as Yup from 'yup';
+import { useAuth } from '../context/AuthContext';
 
 import {
     StyledContainer,
