@@ -6,13 +6,15 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import { AuthProvide, useAuth } from './context/AuthContext';
 import Login from './screens/Login';
 import SignUp from './screens/SignUp';
-import Welcome from './screens/Welcome';
+import SetUp from './screens/SetUp';
 import {ActivityIndicator, View} from 'react-native';
+
+import BottomTabs from './navigation/BottomTabs';
 
 const Stack = createNativeStackNavigator();
 
 const AppNavigator = () => {
-  const {isAuthenticated, loading} = useAuth();
+  const {isAuthenticated, loading, needsSetup} = useAuth();
   if(loading){
     return(
     <View style={{flex:1, justifyContent:'center', alignItems:'center'}}>
@@ -21,21 +23,32 @@ const AppNavigator = () => {
       );
   }
 
+  // Determine initial route based on auth status and setup status
+  let initialRoute = "Login";
+  if (isAuthenticated) {
+    initialRoute = needsSetup ? "SetUp" : "Welcome";
+  }
+
   return (
-    <Stack.Navigator initialRouteName={isAuthenticated ? "Welcome" : "Login"}>
+    <Stack.Navigator initialRouteName={initialRoute}>
       <Stack.Screen
         name="Login"
         component={Login}
         options={{headerShown: false}}
       />
       <Stack.Screen
-        name="Signup"
+        name="SignUp"
         component={SignUp}
         options={{headerShown: false}}
       />
       <Stack.Screen
+        name="SetUp"
+        component={SetUp}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
         name="Welcome"
-        component={Welcome}
+        component={BottomTabs}
         options={{headerShown: false}}
       />
     </Stack.Navigator>
@@ -52,5 +65,3 @@ export default function App() {
     </AuthProvide>
   );
 }
-  
-

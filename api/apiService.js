@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const API_BASE_URL = '10.113.165.119';
+const API_BASE_URL = 'http://localhost:8000';
 
 const getToken = async () => {
     try{
@@ -11,10 +11,15 @@ const getToken = async () => {
     }
 };
 
+const normalizeEndpoint = (endpoint) => {
+    if (!endpoint) return '/';
+    return endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+}
+
 
 const api = {
     async request(endpoint, method = 'GET', data = null, requiresAuth = false) {
-        const url = `${API_BASE_URL}${endpoint}`;
+        const url = `${API_BASE_URL}${normalizeEndpoint(endpoint)}`;
         const headers = {
             'Content-Type': 'application/json',
         };
@@ -59,6 +64,14 @@ const api = {
 
     async getMe() {
         return this.request('me/', 'GET', null, true);
+    },
+
+    async getSetupStatus() {
+        return this.request('setup-status/', 'GET', null, true);
+    },
+
+    async setupLaptop(laptopData) {
+        return this.request('setup/', 'POST', laptopData, true);
     },
 
     async ping() {
