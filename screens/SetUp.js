@@ -48,7 +48,7 @@ const MyTextInput = ({ label, icon, ...props}) => {
 
 const SetUp = () => {
     const navigation = useNavigation();
-    const { setup } = useAuth();
+    const { setup, backendAvailable } = useAuth();
     const [isLoading, setIsLoading] = useState(false);
 
     const handleSetup = async (values) => {
@@ -64,7 +64,7 @@ const SetUp = () => {
                     'Success',
                     'Laptop registered successfully!',
                     [{
-                        text: 'Continue',
+                        text: 'OK',
                         onPress: () => navigation.navigate('Welcome')
                     }]
                 );
