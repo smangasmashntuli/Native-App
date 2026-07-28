@@ -14,7 +14,7 @@ import BottomTabs from './navigation/BottomTabs';
 const Stack = createNativeStackNavigator();
 
 const AppNavigator = () => {
-  const {isAuthenticated, loading, needsSetup} = useAuth();
+  const {loading} = useAuth();
   if(loading){
     return(
     <View style={{flex:1, justifyContent:'center', alignItems:'center'}}>
@@ -23,14 +23,8 @@ const AppNavigator = () => {
       );
   }
 
-  // Determine initial route based on auth status and setup status
-  let initialRoute = "Login";
-  if (isAuthenticated) {
-    initialRoute = needsSetup ? "SetUp" : "Welcome";
-  }
-
   return (
-    <Stack.Navigator initialRouteName={initialRoute}>
+    <Stack.Navigator initialRouteName="Login">
       <Stack.Screen
         name="Login"
         component={Login}
