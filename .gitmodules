@@ -1,0 +1,3 @@
+[submodule "backend/LearningPython"]
+	path = backend/LearningPython
+	url = https://github.com/smangasmashntuli/PC-Doctor-Backend.git
