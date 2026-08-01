@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { Formik } from 'formik';
 import { Octicons } from '@expo/vector-icons';
-import { View, Text, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
+import { View, Text, Alert, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import * as Yup from 'yup';
 import { useAuth } from '../context/AuthContext';
@@ -25,8 +25,7 @@ import {
     TextLinkContent
 } from '../components/style';
 
-const { brand, darkLight, primary, tertiary } = Colors;
-
+const { brand, darkLight, primary } = Colors;
 
 const SignupSchema = Yup.object().shape({
     name: Yup.string().required('Name is required'),
@@ -36,53 +35,47 @@ const SignupSchema = Yup.object().shape({
     confirmPassword: Yup.string().oneOf([Yup.ref('password'), null], 'Passwords must match').required('Confirm Password is required'),
 });
 
-
 const MyTextInput = ({ label, icon, ...props}) => {
     return (
-        <View style={{ marginBottom: 15 }}>
+        <View style={{ marginBottom: 18 }}>
             <StyledInputLabel>{label}</StyledInputLabel>
             <View style={{ position: 'relative' }}>
                 <LeftIcon>
-                    <Octicons name={icon} size={30} color={brand} />
+                    <Octicons name={icon} size={24} color={brand} />
                 </LeftIcon>
                 <StyledTextInput {...props} />
             </View>
-
         </View>
     );
 };
 
 const SignUp = () => {
     const navigation = useNavigation();
-    const {signup } = useAuth();
+    const { signup } = useAuth();
     const [isLoading, setIsLoading] = useState(false);
 
     const handleSignUp = async (values) => {
         setIsLoading(true);
-        try{
+        try {
             const userData = {
                 name: values.name,
                 surname: values.surname,
                 email: values.email,
-                password: values.password
+                password: values.password,
             };
 
             const result = await signup(userData);
-            if(result.success){
-                Alert.alert(
-                    'Success',
-                    'Account created successfully! Please log in.',
-                    [{
+            if (result.success) {
+                Alert.alert('Success', 'Account created successfully! Please log in.', [
+                    {
                         text: 'Go to Login',
-                        onPress: () => navigation.navigate('Login')
+                        onPress: () => navigation.navigate('Login'),
                     },
-                ]
-                );
+                ]);
             } else {
                 Alert.alert('Signup Failed', result.error);
             }
-
-        } catch (error){
+        } catch (error) {
             Alert.alert('Signup Failed', 'An unexpected error occurred. Please try again.');
         } finally {
             setIsLoading(false);
@@ -93,87 +86,89 @@ const SignUp = () => {
         <StyledContainer>
             <StatusBar style="dark" />
             <InnerContainer>
-                <PageTitle>Sign Up</PageTitle>
-                <SubTitle>Create an account to get started!</SubTitle>
+                <View style={{ width: '100%', backgroundColor: '#FFFFFF', borderRadius: 30, padding: 26, shadowColor: '#0F172A', shadowOpacity: 0.08, shadowOffset: { width: 0, height: 10 }, shadowRadius: 24, elevation: 6 }}>
+                    <PageTitle>Create Account</PageTitle>
+                    <SubTitle>Get started with your PC Doctor profile.</SubTitle>
 
-                <Formik
-                    initialValues={{ name: '', surname: '', email: '', password: '', confirmPassword: '' }}
-                    validationSchema={SignupSchema}
-                    onSubmit={handleSignUp}
-                >
-                    {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
-                        <StyledFormArea>
-                            <MyTextInput
-                                label="Name"
-                                icon="person"
-                                placeholder="Enter your name"
-                                onChangeText={handleChange('name')}
-                                onBlur={handleBlur('name')}
-                                value={values.name}
-                            />
-                            {touched.name && errors.name && (<Text style={{ color: 'red', fontSize: 12, marginBottom: 10}}>{errors.name}</Text>
-                        )}
-                            <MyTextInput
-                                label="Surname"
-                                icon="person"
-                                placeholder="Enter your surname"
-                                onChangeText={handleChange('surname')}
-                                onBlur={handleBlur('surname')}
-                                value={values.surname}
-                            />
-                            {touched.surname && errors.surname && (<Text style={{ color: 'red', fontSize: 12, marginBottom: 10}}>{errors.surname}</Text>
-                        )}
-                            <MyTextInput
-                                label="Email Address"
-                                icon="mail"
-                                placeholder="Enter your email"
-                                onChangeText={handleChange('email')}
-                                onBlur={handleBlur('email')}
-                                value={values.email}
-                            />
-                            {touched.email && errors.email && (<Text style={{ color: 'red', fontSize: 12, marginBottom: 10}}>{errors.email}</Text>
-                        )}
-                            <MyTextInput
-                                label="Password"
-                                icon="lock"
-                                placeholder="Enter your password"
-                                secureTextEntry
-                                onChangeText={handleChange('password')}
-                                onBlur={handleBlur('password')}
-                                value={values.password}
-                                secureTextEntry={true}
-                            />
-                            {touched.password && errors.password && (<Text style={{ color: 'red', fontSize: 12, marginBottom: 10}}>{errors.password}</Text>
-                        )}
-                            <MyTextInput
-                                label="Confirm Password"
-                                icon="lock"
-                                placeholder="Enter your password again"
-                                secureTextEntry
-                                onChangeText={handleChange('confirmPassword')}
-                                onBlur={handleBlur('confirmPassword')}
-                                value={values.confirmPassword}
-                                secureTextEntry={true}
-                            />
-                            {touched.confirmPassword && errors.confirmPassword && (<Text style={{ color: 'red', fontSize: 12, marginBottom: 10}}>{errors.confirmPassword}</Text>
-                        )}
+                    <Formik initialValues={{ name: '', surname: '', email: '', password: '', confirmPassword: '' }} validationSchema={SignupSchema} onSubmit={handleSignUp}>
+                        {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
+                            <StyledFormArea>
+                                <MyTextInput
+                                    label="Name"
+                                    icon="person"
+                                    placeholder="Your first name"
+                                    onChangeText={handleChange('name')}
+                                    onBlur={handleBlur('name')}
+                                    value={values.name}
+                                />
+                                {touched.name && errors.name && <Text style={{ color: '#DC2626', fontSize: 12, marginBottom: 10 }}>{errors.name}</Text>}
 
-                            <StyledButton onPress={handleSubmit} disabled={isLoading}>
-                                {isLoading ? (<ActivityIndicator size="small" color={primary}/>) : (<ButtonText>Sign Up</ButtonText>)}
-                            </StyledButton>
+                                <MyTextInput
+                                    label="Surname"
+                                    icon="person"
+                                    placeholder="Your last name"
+                                    onChangeText={handleChange('surname')}
+                                    onBlur={handleBlur('surname')}
+                                    value={values.surname}
+                                />
+                                {touched.surname && errors.surname && <Text style={{ color: '#DC2626', fontSize: 12, marginBottom: 10 }}>{errors.surname}</Text>}
 
-                            <ExtraView>
-                                <ExtraText>Already have an account? </ExtraText>
-                                <TextLink onPress={() => navigation.navigate('Login')}>
-                                    <TextLinkContent>Login</TextLinkContent>
-                                </TextLink>
-                            </ExtraView>
-                        </StyledFormArea>
-                    )}
-                </Formik>
+                                <MyTextInput
+                                    label="Email Address"
+                                    icon="mail"
+                                    placeholder="you@example.com"
+                                    placeholderTextColor={darkLight}
+                                    onChangeText={handleChange('email')}
+                                    onBlur={handleBlur('email')}
+                                    value={values.email}
+                                />
+                                {touched.email && errors.email && <Text style={{ color: '#DC2626', fontSize: 12, marginBottom: 10 }}>{errors.email}</Text>}
+
+                                <MyTextInput
+                                    label="Password"
+                                    icon="lock"
+                                    placeholder="Create a password"
+                                    placeholderTextColor={darkLight}
+                                    onChangeText={handleChange('password')}
+                                    onBlur={handleBlur('password')}
+                                    value={values.password}
+                                    secureTextEntry
+                                />
+                                {touched.password && errors.password && <Text style={{ color: '#DC2626', fontSize: 12, marginBottom: 10 }}>{errors.password}</Text>}
+
+                                <MyTextInput
+                                    label="Confirm Password"
+                                    icon="lock"
+                                    placeholder="Repeat your password"
+                                    placeholderTextColor={darkLight}
+                                    onChangeText={handleChange('confirmPassword')}
+                                    onBlur={handleBlur('confirmPassword')}
+                                    value={values.confirmPassword}
+                                    secureTextEntry
+                                />
+                                {touched.confirmPassword && errors.confirmPassword && <Text style={{ color: '#DC2626', fontSize: 12, marginBottom: 10 }}>{errors.confirmPassword}</Text>}
+
+                                <StyledButton onPress={handleSubmit} disabled={isLoading} style={{ backgroundColor: brand }}>
+                                    {isLoading ? (
+                                        <ActivityIndicator size="small" color={primary} />
+                                    ) : (
+                                        <ButtonText>Create Account</ButtonText>
+                                    )}
+                                </StyledButton>
+
+                                <ExtraView>
+                                    <ExtraText>Already registered? </ExtraText>
+                                    <TextLink onPress={() => navigation.navigate('Login')}>
+                                        <TextLinkContent>Sign in</TextLinkContent>
+                                    </TextLink>
+                                </ExtraView>
+                            </StyledFormArea>
+                        )}
+                    </Formik>
+                </View>
             </InnerContainer>
         </StyledContainer>
-    )
+    );
 };
 
 export default SignUp;

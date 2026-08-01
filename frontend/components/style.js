@@ -6,11 +6,11 @@ import Constants from 'expo-constants';
 const StatusBarHeight = Constants.statusBarHeight;
 
 export const Colors = {
-    primary: "#FFFFFF",
-    secondary: "#E5E7EB",
-    tertiary: "#000000",
-    darkLight: "#9CA3AF",
-    brand: "#6D28D9",
+    primary: "#EFF6FF",
+    secondary: "#E0E7FF",
+    tertiary: "#0F172A",
+    darkLight: "#64748B",
+    brand: "#2563EB",
     green: "#10B981",
     red: "#EF4444",
 };
@@ -31,7 +31,7 @@ export const InnerContainer = styled.View`
 `;
 
 export const PageTitle = styled.Text`
-    font-size: 30px;
+    font-size: 32px;
     text-align: center;
     font-weight: bold;
     color: ${brand};
@@ -39,11 +39,11 @@ export const PageTitle = styled.Text`
 `;
 
 export const SubTitle = styled.Text`
-    font-size: 18px;
-    margin-bottom: 20px;
-    letter-spacing: 1px;
-    font-weight: bold;
-    color: ${tertiary};
+    font-size: 17px;
+    margin-bottom: 24px;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+    color: ${darkLight};
 `;
 
 export const StyledFormArea = styled.View`
