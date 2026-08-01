@@ -1,4 +1,4 @@
-import React from 'react';
+export { default } from './RepairScreen';import React from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { View, Text } from 'react-native';
 import { StyledContainer, InnerContainer, PageTitle, Colors } from '../components/style';

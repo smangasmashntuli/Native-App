@@ -3,6 +3,7 @@ import React from "react";
 import { StatusBar } from "expo-status-bar";
 import { View, Text } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import { useAuth } from "../context/AuthContext";
 
 import { 
     StyledContainer,
@@ -18,8 +19,10 @@ const { brand, darkLight, primary, tertiary } = Colors;
 
 const Welcome = () => {
     const navigation = useNavigation();
+    const { logout } = useAuth();
 
-    const handleLogout = () => {
+    const handleLogout = async () => {
+        await logout();
         navigation.navigate("Login");
     };
 

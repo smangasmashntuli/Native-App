@@ -74,6 +74,14 @@ const api = {
         return this.request('setup/', 'POST', laptopData, true);
     },
 
+    async getLaptop3DModel(laptopId) {
+        return this.request(`laptop/${laptopId}/3d-model/`, 'GET', null, true);
+    },
+
+    async explainComponent(payload) {
+        return this.request('chat/explain-component/', 'POST', payload, true);
+    },
+
     async ping() {
         return this.request('ping/', 'GET');
     }
