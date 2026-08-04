@@ -54,6 +54,7 @@ const api = {
         
     },
 
+    // === Authentication ===
     async signup(userData) {
         return this.request('signup/', 'POST', userData);
     },
@@ -66,14 +67,20 @@ const api = {
         return this.request('me/', 'GET', null, true);
     },
 
+    // === Laptop Setup ===
     async getSetupStatus() {
-        return this.request('setup-status/', 'GET', null, true);
+        return this.request('setup/status/', 'GET', null, true);
     },
 
     async setupLaptop(laptopData) {
         return this.request('setup/', 'POST', laptopData, true);
     },
 
+    async ingestLaptopSpecs(brand, model) {
+        return this.request('laptop/specs/ingest/', 'POST', { brand, model_name: model }, true);
+    },
+
+    // === 3D Model & Components ===
     async getLaptop3DModel(laptopId) {
         return this.request(`laptop/${laptopId}/3d-model/`, 'GET', null, true);
     },
@@ -82,6 +89,41 @@ const api = {
         return this.request('chat/explain-component/', 'POST', payload, true);
     },
 
+    // === Chat ===
+    async sendMessage(message, sessionId = null) {
+        const payload = {
+            user_id: null, // Backend gets this from auth token
+            session_id: sessionId,
+            message,
+        };
+        return this.request('chat/message/', 'POST', payload, true);
+    },
+
+    async getChatHistory(sessionId) {
+        return this.request(`chat/history/${sessionId}/`, 'GET', null, true);
+    },
+
+    // === Notifications ===
+    async getNotifications(unreadOnly = false) {
+        const endpoint = unreadOnly ? 'notifications/?unread_only=true' : 'notifications/';
+        return this.request(endpoint, 'GET', null, true);
+    },
+
+    async markNotificationRead(notificationId) {
+        return this.request(`notifications/${notificationId}/read/`, 'PATCH', null, true);
+    },
+
+    async triggerMaintenance() {
+        return this.request('notifications/trigger-maintenance/', 'POST', null, true);
+    },
+
+    // === YouTube Videos ===
+    async searchVideos(brand, model, issue) {
+        const params = new URLSearchParams({ brand, model, issue });
+        return this.request(`videos/search/?${params.toString()}`, 'GET', null, true);
+    },
+
+    // === Health Check ===
     async ping() {
         return this.request('ping/', 'GET');
     }
