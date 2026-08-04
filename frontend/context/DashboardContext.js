@@ -1,123 +1,208 @@
-import React, { createContext, useContext, useMemo, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import api from '../api/apiService';
 
 const DashboardContext = createContext(null);
 
-const INITIAL_DEVICES = [
-  {
-    id: 'dev-1',
-    name: 'MacBook Pro 16"',
-    specs: 'M2 Max • 32GB RAM • 1TB SSD',
-    processor: 'Apple M2 Max (12-core)',
-    ram: '32GB Unified Memory',
-    storage: '1TB NVMe Flash',
-    gpu: '30-Core GPU',
-    batteryHealth: 'Normal',
-    batteryPercentage: 85,
-    cpuUsagePercentage: 32,
-    storageUsedGB: 422,
-    storageTotalGB: 1024,
-    gpuTempC: 48,
-    cpuTempC: 62,
-    fanSpeedRPM: 2400,
-    image: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=900&q=80',
-    isActive: true,
-  },
-  {
-    id: 'dev-2',
-    name: 'Home Workstation',
-    specs: 'RTX 4080 • Core i9 • 64GB RAM',
-    processor: 'Intel Core i9-14900K',
-    ram: '64GB DDR5 6000MHz',
-    storage: '2TB PCIe Gen4 SSD',
-    gpu: 'NVIDIA RTX 4080 16GB',
-    batteryHealth: 'AC Powered',
-    batteryPercentage: 100,
-    cpuUsagePercentage: 18,
-    storageUsedGB: 890,
-    storageTotalGB: 2048,
-    gpuTempC: 42,
-    cpuTempC: 55,
-    fanSpeedRPM: 1800,
-    image: 'https://images.unsplash.com/photo-1587202372775-e229f172b9d7?auto=format&fit=crop&w=900&q=80',
-    isActive: false,
-  },
-];
-
-const INITIAL_ALERTS = [
-  {
-    id: 'alt-1',
-    title: 'Urgent: OS Security Patch',
-    description: 'Critical firmware patch available. Install now to protect hardware-level vulnerabilities.',
-    time: '2 hours ago',
-    category: 'security',
-    severity: 'urgent',
-    read: false,
-  },
-  {
-    id: 'alt-2',
-    title: 'Maintenance Tip',
-    description: 'CPU temperature spike detected. Clear dust from intake vents and check fan speed.',
-    time: 'Yesterday',
-    category: 'maintenance',
-    severity: 'warning',
-    read: false,
-  },
-  {
-    id: 'alt-3',
-    title: 'Driver Alert',
-    description: 'New stable GPU driver is available for your graphics subsystem.',
-    time: '3 days ago',
-    category: 'driver',
-    severity: 'info',
-    read: false,
-  },
-];
-
 export const DashboardProvider = ({ children }) => {
-  const [devices, setDevices] = useState(INITIAL_DEVICES);
-  const [activeDeviceId, setActiveDeviceId] = useState(INITIAL_DEVICES[0].id);
-  const [alerts, setAlerts] = useState(INITIAL_ALERTS);
-  const [experienceLevel, setExperienceLevel] = useState('Beginner');
+  // API-driven state
+  const [laptopSetup, setLaptopSetup] = useState(null);
+  const [laptopSpecs, setLaptopSpecs] = useState(null);
+  const [notifications, setNotifications] = useState([]);
+  const [user, setUser] = useState(null);
+
+  // Loading states
+  const [loadingLaptop, setLoadingLaptop] = useState(false);
+  const [loadingSpecs, setLoadingSpecs] = useState(false);
+  const [loadingNotifications, setLoadingNotifications] = useState(false);
+
+  // Error states
+  const [laptopError, setLaptopError] = useState(null);
+  const [specsError, setSpecsError] = useState(null);
+  const [notificationsError, setNotificationsError] = useState(null);
+
+  // Local-only state (persisted in AsyncStorage)
+  const [experienceLevel, setExperienceLevelState] = useState('Beginner');
   const [chatInitialQuery, setChatInitialQuery] = useState(undefined);
 
-  const activeDevice = useMemo(
-    () => devices.find((device) => device.id === activeDeviceId) || devices[0],
-    [devices, activeDeviceId]
-  );
+  // Load experience level from AsyncStorage on mount
+  useEffect(() => {
+    loadExperienceLevel();
+  }, []);
 
-  const selectDevice = (id) => {
-    setDevices((prev) => prev.map((device) => ({ ...device, isActive: device.id === id })));
-    setActiveDeviceId(id);
+  const loadExperienceLevel = async () => {
+    try {
+      const saved = await AsyncStorage.getItem('experienceLevel');
+      if (saved) {
+        setExperienceLevelState(saved);
+      }
+    } catch (error) {
+      console.error('Error loading experience level:', error);
+    }
   };
 
-  const addDevice = (device) => {
-    setDevices((prev) => [{ ...device, isActive: true }, ...prev.map((d) => ({ ...d, isActive: false }))]);
-    setActiveDeviceId(device.id);
+  const setExperienceLevel = async (level) => {
+    setExperienceLevelState(level);
+    try {
+      await AsyncStorage.setItem('experienceLevel', level);
+    } catch (error) {
+      console.error('Error saving experience level:', error);
+    }
   };
 
-  const markAllAlertsRead = () => setAlerts((prev) => prev.map((alert) => ({ ...alert, read: true })));
-  const clearAlerts = () => setAlerts([]);
+  // === Data Loading Methods ===
+
+  const loadLaptopData = useCallback(async () => {
+    setLoadingLaptop(true);
+    setLaptopError(null);
+    try {
+      const status = await api.getSetupStatus();
+      if (status.laptop) {
+        setLaptopSetup(status.laptop);
+        // Try to load specs if laptop is registered
+        await loadLaptopSpecs(status.laptop.brand, status.laptop.model);
+      } else {
+        setLaptopSetup(null);
+        setLaptopSpecs(null);
+      }
+    } catch (error) {
+      console.error('Error loading laptop data:', error);
+      setLaptopError(error.message || 'Failed to load laptop data');
+    } finally {
+      setLoadingLaptop(false);
+    }
+  }, []);
+
+  const loadLaptopSpecs = useCallback(async (brand, model) => {
+    setLoadingSpecs(true);
+    setSpecsError(null);
+    try {
+      const result = await api.ingestLaptopSpecs(brand, model);
+      if (result.specs) {
+        setLaptopSpecs(result.specs);
+      }
+    } catch (error) {
+      console.error('Error loading laptop specs:', error);
+      setSpecsError(error.message || 'Failed to load laptop specifications');
+    } finally {
+      setLoadingSpecs(false);
+    }
+  }, []);
+
+  const loadNotifications = useCallback(async () => {
+    setLoadingNotifications(true);
+    setNotificationsError(null);
+    try {
+      const result = await api.getNotifications();
+      setNotifications(result);
+    } catch (error) {
+      console.error('Error loading notifications:', error);
+      setNotificationsError(error.message || 'Failed to load notifications');
+    } finally {
+      setLoadingNotifications(false);
+    }
+  }, []);
+
+  const markNotificationAsRead = useCallback(async (notificationId) => {
+    try {
+      await api.markNotificationRead(notificationId);
+      // Update local state
+      setNotifications(prev =>
+        prev.map(n =>
+          n.id === notificationId ? { ...n, is_read: true } : n
+        )
+      );
+    } catch (error) {
+      console.error('Error marking notification as read:', error);
+      throw error;
+    }
+  }, []);
+
+  const triggerMaintenanceAlerts = useCallback(async () => {
+    try {
+      const result = await api.triggerMaintenance();
+      // Refresh notifications after triggering
+      await loadNotifications();
+      return result;
+    } catch (error) {
+      console.error('Error triggering maintenance alerts:', error);
+      throw error;
+    }
+  }, [loadNotifications]);
+
+  const refreshAll = useCallback(async () => {
+    await Promise.all([
+      loadLaptopData(),
+      loadNotifications(),
+    ]);
+  }, [loadLaptopData, loadNotifications]);
+
+  // === Local State Methods ===
+
   const setEmergencyQuery = (query) => setChatInitialQuery(query);
   const resetChatInitialQuery = () => setChatInitialQuery(undefined);
 
+  // === Derived Data ===
+
+  const activeDevice = laptopSetup
+    ? {
+        id: laptopSetup.id,
+        name: `${laptopSetup.brand} ${laptopSetup.model}`,
+        brand: laptopSetup.brand,
+        model: laptopSetup.model,
+        specs: laptopSpecs ? `${laptopSpecs.cpu || 'N/A'} • ${laptopSpecs.ram || 'N/A'} • ${laptopSpecs.storage || 'N/A'}` : 'Specs loading...',
+        image: laptopSpecs?.image_url || null,
+        cpu: laptopSpecs?.cpu || null,
+        gpu: laptopSpecs?.gpu || null,
+        ram: laptopSpecs?.ram || null,
+        storage: laptopSpecs?.storage || null,
+        display: laptopSpecs?.display || null,
+        os: laptopSpecs?.os || null,
+        knownIssues: laptopSpecs?.known_issues || [],
+      }
+    : null;
+
+  const unreadCount = notifications.filter(n => !n.is_read).length;
+
+  const value = {
+    // API-driven data
+    laptopSetup,
+    laptopSpecs,
+    activeDevice,
+    notifications,
+    user,
+    unreadCount,
+
+    // Loading states
+    loadingLaptop,
+    loadingSpecs,
+    loadingNotifications,
+
+    // Error states
+    laptopError,
+    specsError,
+    notificationsError,
+
+    // Local state
+    experienceLevel,
+    chatInitialQuery,
+
+    // Data loading methods
+    loadLaptopData,
+    loadLaptopSpecs,
+    loadNotifications,
+    markNotificationAsRead,
+    triggerMaintenanceAlerts,
+    refreshAll,
+
+    // Local state methods
+    setExperienceLevel,
+    setEmergencyQuery,
+    resetChatInitialQuery,
+  };
+
   return (
-    <DashboardContext.Provider
-      value={{
-        devices,
-        activeDevice,
-        activeDeviceId,
-        alerts,
-        experienceLevel,
-        chatInitialQuery,
-        selectDevice,
-        addDevice,
-        markAllAlertsRead,
-        clearAlerts,
-        setExperienceLevel,
-        setEmergencyQuery,
-        resetChatInitialQuery,
-      }}
-    >
+    <DashboardContext.Provider value={value}>
       {children}
     </DashboardContext.Provider>
   );
