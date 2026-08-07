@@ -6,16 +6,18 @@ import Constants from 'expo-constants';
 const StatusBarHeight = Constants.statusBarHeight;
 
 export const Colors = {
-    primary: "#EFF6FF",
-    secondary: "#E0E7FF",
-    tertiary: "#0F172A",
-    darkLight: "#64748B",
+    primary: "#dadcdc",
+    secondary: "#FFFFFF",
+    tertiary: "#000000",
+    darkLight: "#000000",
     brand: "#2563EB",
+    border: "#c2c5c5",
+    warning: "#ffd52c",
     green: "#10B981",
     red: "#EF4444",
 };
 
-const { primary, secondary, tertiary, darkLight, brand, green, red } = Colors;
+const { primary, secondary, tertiary, darkLight, brand, border, warning, green, red } = Colors;
 
 export const StyledContainer = styled.View`
     flex: 1;
@@ -39,7 +41,7 @@ export const PageTitle = styled.Text`
     font-size: 32px;
     text-align: center;
     font-weight: bold;
-    color: ${brand};
+    color: ${tertiary};
     padding: 10px;
 `;
 
@@ -103,7 +105,7 @@ export const StyledButton = styled.TouchableOpacity`
 `;
 
 export const ButtonText = styled.Text`
-    color: ${primary};
+    color: ${secondary};
     font-size: 16px;
     font-weight: bold;
 `;

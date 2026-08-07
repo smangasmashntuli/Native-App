@@ -8,7 +8,6 @@ import { AntDesign, Feather, MaterialCommunityIcons } from '@expo/vector-icons';
 import api from '../api/apiService';
 import LoadingState from '../components/LoadingState';
 import ErrorState from '../components/ErrorState';
-import HeaderCard from '../components/HeaderCard';
 
 const { brand, tertiary, darkLight } = Colors;
 
@@ -62,13 +61,12 @@ const Profile = () => {
       <InnerContainer>
         <ScrollView
           style={{ width: '100%' }}
-          contentContainerStyle={{ paddingBottom: 32 }}
+          contentContainerStyle={{ paddingBottom: 32, paddingTop: 20 }}
           showsVerticalScrollIndicator={false}
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }
         >
-          <HeaderCard />
           <PageTitle>Devices & Settings</PageTitle>
           <SubTitle>Manage profiles and diagnostic preferences.</SubTitle>
 
@@ -142,7 +140,7 @@ const Profile = () => {
               </View>
             ) : (
               <View style={styles.noLaptopCard}>
-                <Feather name="alert-circle" size={20} color="#F59E0B" style={{ marginRight: 8 }} />
+                <Feather name="alert-circle" size={20} color="Colors.warning" style={{ marginRight: 8 }} />
                 <Text style={styles.noLaptopText}>No laptop registered yet</Text>
               </View>
             )}
@@ -158,12 +156,12 @@ const Profile = () => {
                   styles.experienceButton,
                   {
                     backgroundColor: experienceLevel === 'Beginner' ? brand : '#FFFFFF',
-                    borderColor: experienceLevel === 'Beginner' ? brand : '#E2E8F0',
+                    borderColor: experienceLevel === 'Beginner' ? brand : 'border',
                   }
                 ]}
               >
                 <Text style={{
-                  color: experienceLevel === 'Beginner' ? '#FFFFFF' : '#0F172A',
+                  color: experienceLevel === 'Beginner' ? '#FFFFFF' : 'tertiary',
                   fontSize: 13,
                   fontWeight: '700',
                   textAlign: 'center'
@@ -177,12 +175,12 @@ const Profile = () => {
                   styles.experienceButton,
                   {
                     backgroundColor: experienceLevel === 'Intermediate' ? brand : '#FFFFFF',
-                    borderColor: experienceLevel === 'Intermediate' ? brand : '#E2E8F0',
+                    borderColor: experienceLevel === 'Intermediate' ? brand : 'border',
                   }
                 ]}
               >
                 <Text style={{
-                  color: experienceLevel === 'Intermediate' ? '#FFFFFF' : '#0F172A',
+                  color: experienceLevel === 'Intermediate' ? '#FFFFFF' : 'tertiary',
                   fontSize: 13,
                   fontWeight: '700',
                   textAlign: 'center'
@@ -211,7 +209,7 @@ const Profile = () => {
 
           {/* Logout Button */}
           <View style={{ marginTop: 20, marginBottom: 12 }}>
-            <StyledButton onPress={handleLogout} style={{ backgroundColor: '#F97316' }}>
+            <StyledButton onPress={handleLogout} style={{ backgroundColor: 'brand' }}>
               <ButtonText>Logout</ButtonText>
             </StyledButton>
           </View>
@@ -228,7 +226,7 @@ const styles = {
     padding: 20,
     marginBottom: 20,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: 'border',
   },
   accountHeader: {
     flexDirection: 'row',
@@ -251,7 +249,7 @@ const styles = {
   userName: {
     fontSize: 16,
     fontWeight: '700',
-    color: '#0F172A',
+    color: 'tertiary',
     marginBottom: 4,
   },
   userEmail: {
@@ -261,7 +259,7 @@ const styles = {
   sectionTitle: {
     fontSize: 16,
     fontWeight: '700',
-    color: '#0F172A',
+    color: 'tertiary',
     marginBottom: 12,
   },
   laptopCard: {
@@ -269,7 +267,7 @@ const styles = {
     borderRadius: 24,
     padding: 20,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: 'border',
   },
   laptopHeader: {
     flexDirection: 'row',
@@ -279,19 +277,19 @@ const styles = {
   laptopName: {
     fontSize: 15,
     fontWeight: '700',
-    color: '#0F172A',
+    color: 'tertiary',
     marginBottom: 4,
   },
   laptopStatus: {
     fontSize: 12,
-    color: '#10B981',
+    color: 'brand',
     fontWeight: '600',
   },
   specsContainer: {
     marginTop: 8,
     paddingTop: 12,
     borderTopWidth: 1,
-    borderTopColor: '#F1F5F9',
+    borderTopColor: 'secondary',
   },
   specRow: {
     flexDirection: 'row',
@@ -305,30 +303,30 @@ const styles = {
   },
   specValue: {
     fontSize: 12,
-    color: '#0F172A',
+    color: 'tertiary',
     flex: 1,
   },
   noLaptopCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#FEF3C7',
+    backgroundColor: 'Colors.warning + "33"',
     borderRadius: 20,
     padding: 16,
     borderWidth: 1,
-    borderColor: '#FDE68A',
+    borderColor: 'Colors.warning',
   },
   noLaptopText: {
     fontSize: 13,
-    color: '#92400E',
+    color: 'tertiary',
     fontWeight: '600',
   },
   experienceCard: {
-    backgroundColor: '#F8FAFC',
+    backgroundColor: 'secondary',
     borderRadius: 24,
     padding: 20,
     marginBottom: 20,
     borderWidth: 1,
-    borderColor: '#E0E7FF',
+    borderColor: 'secondary',
   },
   experienceButton: {
     flex: 1,
@@ -347,7 +345,7 @@ const styles = {
     borderRadius: 24,
     padding: 20,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: 'border',
   },
   notificationRow: {
     flexDirection: 'row',
@@ -355,7 +353,7 @@ const styles = {
   },
   notificationText: {
     fontSize: 13,
-    color: '#0F172A',
+    color: 'tertiary',
     fontWeight: '600',
   },
 };
