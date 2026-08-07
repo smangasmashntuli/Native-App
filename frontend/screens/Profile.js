@@ -8,6 +8,7 @@ import { AntDesign, Feather, MaterialCommunityIcons } from '@expo/vector-icons';
 import api from '../api/apiService';
 import LoadingState from '../components/LoadingState';
 import ErrorState from '../components/ErrorState';
+import HeaderCard from '../components/HeaderCard';
 
 const { brand, tertiary, darkLight } = Colors;
 
@@ -67,6 +68,7 @@ const Profile = () => {
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }
         >
+          <HeaderCard />
           <PageTitle>Devices & Settings</PageTitle>
           <SubTitle>Manage profiles and diagnostic preferences.</SubTitle>
 

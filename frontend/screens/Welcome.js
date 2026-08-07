@@ -17,6 +17,7 @@ import {
 import LoadingState from '../components/LoadingState';
 import ErrorState from '../components/ErrorState';
 import EmptyState from '../components/EmptyState';
+import HeaderCard from '../components/HeaderCard';
 
 const { brand, darkLight, tertiary } = Colors;
 
@@ -92,21 +93,24 @@ const Welcome = () => {
 
   // Empty state - no laptop registered
   if (!activeDevice) {
-    return (
-      <StyledContainer>
-        <StatusBar style="dark" />
-        <InnerContainer>
-          <ScrollView
-            style={{ width: '100%' }}
-            contentContainerStyle={{ paddingBottom: 36 }}
-            refreshControl={
-              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-            }
-          >
-            <View style={{ marginBottom: 28 }}>
-              <PageTitle>PC Doctor Dashboard</PageTitle>
-              <SubTitle>Monitor your device, prioritize alerts, and start diagnostics.</SubTitle>
-            </View>
+  return (
+    <StyledContainer>
+      <StatusBar style="dark" />
+      <InnerContainer>
+        <ScrollView
+          style={{ width: '100%' }}
+          contentContainerStyle={{ paddingBottom: 36 }}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+        >
+          {/* Header Card */}
+          <HeaderCard />
+
+          <View style={{ marginBottom: 28 }}>
+            <PageTitle>PC Doctor Dashboard</PageTitle>
+            <SubTitle>Monitor your device, prioritize alerts, and start diagnostics.</SubTitle>
+          </View>
             <EmptyState
               icon="💻"
               message="No laptop registered yet. Set up your device to get started."

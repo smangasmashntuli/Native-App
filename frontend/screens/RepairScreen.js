@@ -9,6 +9,7 @@ import LoadingState from '../components/LoadingState';
 import ErrorState from '../components/ErrorState';
 import EmptyState from '../components/EmptyState';
 import ComponentInfoModal from '../components/ComponentInfoModal';
+import HeaderCard from '../components/HeaderCard';
 
 const { brand, darkLight, tertiary } = Colors;
 
@@ -176,6 +177,7 @@ const RepairScreen = () => {
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }
         >
+          <HeaderCard />
           <View style={{ marginBottom: 20 }}>
             <PageTitle>Interactive Repair</PageTitle>
             <SubTitle>Tap components to learn about your {activeDevice.name}</SubTitle>
