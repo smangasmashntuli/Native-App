@@ -1,113 +1,361 @@
-import React from 'react';
-import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { ScrollView, Text, TouchableOpacity, View, RefreshControl } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
+import { useAuth } from '../context/AuthContext';
 import { useDashboard } from '../context/DashboardContext';
 import { Colors, StyledContainer, InnerContainer, PageTitle, SubTitle, StyledButton, ButtonText } from '../components/style';
+import { AntDesign, Feather, MaterialCommunityIcons } from '@expo/vector-icons';
+import api from '../api/apiService';
+import LoadingState from '../components/LoadingState';
+import ErrorState from '../components/ErrorState';
 
 const { brand, tertiary, darkLight } = Colors;
 
 const Profile = () => {
-  const { devices, activeDeviceId, selectDevice, experienceLevel, setExperienceLevel, alerts, addDevice } = useDashboard();
+  const { user, logout } = useAuth();
+  const {
+    laptopSetup,
+    laptopSpecs,
+    notifications,
+    unreadCount,
+    experienceLevel,
+    setExperienceLevel,
+    loadingLaptop,
+    laptopError,
+    loadLaptopData,
+    loadNotifications,
+  } = useDashboard();
+
+  const [refreshing, setRefreshing] = useState(false);
+
+  useEffect(() => {
+    loadLaptopData();
+    loadNotifications();
+  }, []);
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await Promise.all([loadLaptopData(), loadNotifications()]);
+    setRefreshing(false);
+  };
+
+  const handleLogout = async () => {
+    await logout();
+  };
+
+  // Loading state
+  if (loadingLaptop && !laptopSetup) {
+    return (
+      <StyledContainer>
+        <StatusBar style="dark" />
+        <InnerContainer>
+          <LoadingState message="Loading profile..." />
+        </InnerContainer>
+      </StyledContainer>
+    );
+  }
 
   return (
     <StyledContainer>
       <StatusBar style="dark" />
       <InnerContainer>
-        <ScrollView style={{ width: '100%' }} contentContainerStyle={{ paddingBottom: 32 }} showsVerticalScrollIndicator={false}>
+        <ScrollView
+          style={{ width: '100%' }}
+          contentContainerStyle={{ paddingBottom: 32 }}
+          showsVerticalScrollIndicator={false}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+        >
           <PageTitle>Devices & Settings</PageTitle>
           <SubTitle>Manage profiles and diagnostic preferences.</SubTitle>
 
-          <View style={{ marginBottom: 20 }}>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
-              <Text style={{ fontSize: 16, fontWeight: '700', color: '#0F172A' }}>Active Devices</Text>
-              <StyledButton onPress={() => addDevice({
-                id: `dev-${Date.now()}`,
-                name: 'New Device',
-                specs: 'Custom • 16GB RAM • 512GB SSD',
-                processor: 'Intel Core i7-14700K',
-                ram: '16GB DDR5',
-                storage: '512GB NVMe SSD',
-                gpu: 'NVIDIA RTX 4060',
-                batteryHealth: 'Normal',
-                batteryPercentage: 94,
-                cpuUsagePercentage: 22,
-                storageUsedGB: 258,
-                storageTotalGB: 512,
-                gpuTempC: 46,
-                cpuTempC: 53,
-                fanSpeedRPM: 1900,
-                image: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=900&q=80',
-                isActive: true,
-              })}>
-                <ButtonText>Quick Add</ButtonText>
-              </StyledButton>
+          {/* User Account Info */}
+          <View style={styles.accountCard}>
+            <View style={styles.accountHeader}>
+              <View style={styles.avatar}>
+                <Text style={styles.avatarText}>
+                  {user?.name?.[0]?.toUpperCase() || 'U'}
+                </Text>
+              </View>
+              <View style={{ flex: 1 }}>
+                <Text style={styles.userName}>
+                  {user?.name} {user?.surname}
+                </Text>
+                <Text style={styles.userEmail}>{user?.email}</Text>
+              </View>
             </View>
-            {devices.map((device) => (
-              <TouchableOpacity
-                key={device.id}
-                onPress={() => selectDevice(device.id)}
-                style={{
-                  padding: 16,
-                  borderRadius: 24,
-                  backgroundColor: device.id === activeDeviceId ? '#EEF2FF' : '#FFFFFF',
-                  borderWidth: 1,
-                  borderColor: device.id === activeDeviceId ? brand : '#E2E8F0',
-                  marginBottom: 12,
-                }}
-              >
-                <Text style={{ fontSize: 15, fontWeight: '700', color: '#0F172A' }}>{device.name}</Text>
-                <Text style={{ fontSize: 12, color: darkLight, marginTop: 4 }}>{device.specs}</Text>
-              </TouchableOpacity>
-            ))}
           </View>
 
-          <View style={{ marginBottom: 20, padding: 18, borderRadius: 24, backgroundColor: '#F8FAFC', borderWidth: 1, borderColor: '#E0E7FF' }}>
-            <Text style={{ fontSize: 16, fontWeight: '700', color: '#0F172A', marginBottom: 12 }}>Experience Level</Text>
+          {/* Current Laptop */}
+          <View style={{ marginBottom: 20 }}>
+            <Text style={styles.sectionTitle}>Current Laptop</Text>
+            {laptopSetup ? (
+              <View style={styles.laptopCard}>
+                <View style={styles.laptopHeader}>
+                  <Feather name="laptop" size={24} color={brand} style={{ marginRight: 12 }} />
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.laptopName}>
+                      {laptopSetup.brand} {laptopSetup.model}
+                    </Text>
+                    <Text style={styles.laptopStatus}>✓ Registered</Text>
+                  </View>
+                </View>
+
+                {/* Laptop Specs Summary */}
+                {laptopSpecs && (
+                  <View style={styles.specsContainer}>
+                    {laptopSpecs.cpu && (
+                      <View style={styles.specRow}>
+                        <Text style={styles.specLabel}>CPU:</Text>
+                        <Text style={styles.specValue}>{laptopSpecs.cpu}</Text>
+                      </View>
+                    )}
+                    {laptopSpecs.gpu && (
+                      <View style={styles.specRow}>
+                        <Text style={styles.specLabel}>GPU:</Text>
+                        <Text style={styles.specValue}>{laptopSpecs.gpu}</Text>
+                      </View>
+                    )}
+                    {laptopSpecs.ram && (
+                      <View style={styles.specRow}>
+                        <Text style={styles.specLabel}>RAM:</Text>
+                        <Text style={styles.specValue}>{laptopSpecs.ram}</Text>
+                      </View>
+                    )}
+                    {laptopSpecs.storage && (
+                      <View style={styles.specRow}>
+                        <Text style={styles.specLabel}>Storage:</Text>
+                        <Text style={styles.specValue}>{laptopSpecs.storage}</Text>
+                      </View>
+                    )}
+                    {laptopSpecs.os && (
+                      <View style={styles.specRow}>
+                        <Text style={styles.specLabel}>OS:</Text>
+                        <Text style={styles.specValue}>{laptopSpecs.os}</Text>
+                      </View>
+                    )}
+                  </View>
+                )}
+              </View>
+            ) : (
+              <View style={styles.noLaptopCard}>
+                <Feather name="alert-circle" size={20} color="#F59E0B" style={{ marginRight: 8 }} />
+                <Text style={styles.noLaptopText}>No laptop registered yet</Text>
+              </View>
+            )}
+          </View>
+
+          {/* Experience Level */}
+          <View style={styles.experienceCard}>
+            <Text style={styles.sectionTitle}>Experience Level</Text>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
               <TouchableOpacity
                 onPress={() => setExperienceLevel('Beginner')}
-                style={{
-                  flex: 1,
-                  paddingVertical: 16,
-                  marginRight: 8,
-                  borderRadius: 18,
-                  backgroundColor: experienceLevel === 'Beginner' ? brand : '#FFFFFF',
-                  borderWidth: 1,
-                  borderColor: experienceLevel === 'Beginner' ? brand : '#E2E8F0',
-                }}
+                style={[
+                  styles.experienceButton,
+                  {
+                    backgroundColor: experienceLevel === 'Beginner' ? brand : '#FFFFFF',
+                    borderColor: experienceLevel === 'Beginner' ? brand : '#E2E8F0',
+                  }
+                ]}
               >
-                <Text style={{ color: experienceLevel === 'Beginner' ? '#FFFFFF' : '#0F172A', fontSize: 13, fontWeight: '700', textAlign: 'center' }}>Beginner</Text>
+                <Text style={{
+                  color: experienceLevel === 'Beginner' ? '#FFFFFF' : '#0F172A',
+                  fontSize: 13,
+                  fontWeight: '700',
+                  textAlign: 'center'
+                }}>
+                  Beginner
+                </Text>
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => setExperienceLevel('Intermediate')}
-                style={{
-                  flex: 1,
-                  paddingVertical: 16,
-                  marginLeft: 8,
-                  borderRadius: 18,
-                  backgroundColor: experienceLevel === 'Intermediate' ? brand : '#FFFFFF',
-                  borderWidth: 1,
-                  borderColor: experienceLevel === 'Intermediate' ? brand : '#E2E8F0',
-                }}
+                style={[
+                  styles.experienceButton,
+                  {
+                    backgroundColor: experienceLevel === 'Intermediate' ? brand : '#FFFFFF',
+                    borderColor: experienceLevel === 'Intermediate' ? brand : '#E2E8F0',
+                  }
+                ]}
               >
-                <Text style={{ color: experienceLevel === 'Intermediate' ? '#FFFFFF' : '#0F172A', fontSize: 13, fontWeight: '700', textAlign: 'center' }}>Intermediate</Text>
+                <Text style={{
+                  color: experienceLevel === 'Intermediate' ? '#FFFFFF' : '#0F172A',
+                  fontSize: 13,
+                  fontWeight: '700',
+                  textAlign: 'center'
+                }}>
+                  Intermediate
+                </Text>
               </TouchableOpacity>
             </View>
-            <Text style={{ fontSize: 12, color: tertiary, marginTop: 12 }}>
+            <Text style={styles.experienceDescription}>
               {experienceLevel === 'Beginner'
                 ? 'Beginner mode uses simpler instructions and stronger safety guidance.'
                 : 'Intermediate mode includes hardware details and more technical troubleshooting.'}
             </Text>
           </View>
 
-          <View style={{ padding: 18, borderRadius: 24, backgroundColor: '#FFFFFF', borderWidth: 1, borderColor: '#E2E8F0' }}>
-            <Text style={{ fontSize: 16, fontWeight: '700', color: '#0F172A', marginBottom: 12 }}>Recent Alerts</Text>
-            <Text style={{ fontSize: 12, color: tertiary }}>{alerts.length} notifications generated from diagnostics and telemetry.</Text>
+          {/* Notification Summary */}
+          <View style={styles.notificationCard}>
+            <Text style={styles.sectionTitle}>Notifications</Text>
+            <View style={styles.notificationRow}>
+              <MaterialCommunityIcons name="bell-outline" size={20} color={brand} style={{ marginRight: 8 }} />
+              <Text style={styles.notificationText}>
+                {notifications.length} total • {unreadCount} unread
+              </Text>
+            </View>
+          </View>
+
+          {/* Logout Button */}
+          <View style={{ marginTop: 20, marginBottom: 12 }}>
+            <StyledButton onPress={handleLogout} style={{ backgroundColor: '#F97316' }}>
+              <ButtonText>Logout</ButtonText>
+            </StyledButton>
           </View>
         </ScrollView>
       </InnerContainer>
     </StyledContainer>
   );
+};
+
+const styles = {
+  accountCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 24,
+    padding: 20,
+    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+  },
+  accountHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  avatar: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: brand,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 16,
+  },
+  avatarText: {
+    fontSize: 20,
+    fontWeight: '800',
+    color: '#FFFFFF',
+  },
+  userName: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#0F172A',
+    marginBottom: 4,
+  },
+  userEmail: {
+    fontSize: 13,
+    color: darkLight,
+  },
+  sectionTitle: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#0F172A',
+    marginBottom: 12,
+  },
+  laptopCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 24,
+    padding: 20,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+  },
+  laptopHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  laptopName: {
+    fontSize: 15,
+    fontWeight: '700',
+    color: '#0F172A',
+    marginBottom: 4,
+  },
+  laptopStatus: {
+    fontSize: 12,
+    color: '#10B981',
+    fontWeight: '600',
+  },
+  specsContainer: {
+    marginTop: 8,
+    paddingTop: 12,
+    borderTopWidth: 1,
+    borderTopColor: '#F1F5F9',
+  },
+  specRow: {
+    flexDirection: 'row',
+    marginBottom: 6,
+  },
+  specLabel: {
+    fontSize: 12,
+    color: darkLight,
+    fontWeight: '600',
+    width: 70,
+  },
+  specValue: {
+    fontSize: 12,
+    color: '#0F172A',
+    flex: 1,
+  },
+  noLaptopCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FEF3C7',
+    borderRadius: 20,
+    padding: 16,
+    borderWidth: 1,
+    borderColor: '#FDE68A',
+  },
+  noLaptopText: {
+    fontSize: 13,
+    color: '#92400E',
+    fontWeight: '600',
+  },
+  experienceCard: {
+    backgroundColor: '#F8FAFC',
+    borderRadius: 24,
+    padding: 20,
+    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: '#E0E7FF',
+  },
+  experienceButton: {
+    flex: 1,
+    paddingVertical: 16,
+    marginHorizontal: 4,
+    borderRadius: 18,
+    borderWidth: 1,
+  },
+  experienceDescription: {
+    fontSize: 12,
+    color: darkLight,
+    marginTop: 12,
+  },
+  notificationCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 24,
+    padding: 20,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+  },
+  notificationRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  notificationText: {
+    fontSize: 13,
+    color: '#0F172A',
+    fontWeight: '600',
+  },
 };
 
 export default Profile;
