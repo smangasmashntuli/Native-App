@@ -4,33 +4,11 @@ import { StatusBar } from 'expo-status-bar';
 import { useDashboard } from '../context/DashboardContext';
 import { Colors, StyledContainer, InnerContainer, PageTitle, SubTitle } from '../components/style';
 import { AntDesign, Feather, MaterialCommunityIcons } from '@expo/vector-icons';
+import api from '../api/apiService';
+import LoadingState from '../components/LoadingState';
+import ErrorState from '../components/ErrorState';
 
 const { brand, darkLight, tertiary } = Colors;
-
-const initialMessages = [
-  {
-    id: 'msg-1',
-    sender: 'user',
-    text: 'My PC is running extremely slow today. It takes forever to open simple apps like Chrome. Can you help me troubleshoot?',
-    timestamp: '13:30',
-  },
-  {
-    id: 'msg-2',
-    sender: 'ai',
-    text: "I've analyzed your system vitals. Your CPU usage is spiking with heavy disk I/O. Let's resolve this with these steps:",
-    timestamp: '13:31',
-    steps: [
-      'Open Task Manager and identify processes with high CPU or memory.',
-      'Clear temporary files and system caches.',
-      'Inspect fans and ventilation for overheating.',
-    ],
-    hasSafetyWarning: true,
-    recommendedVideo: {
-      title: 'How to Optimize Windows 11 (2024)',
-      thumbnail: 'https://images.unsplash.com/photo-1587202372775-e229f172b9d7?auto=format&fit=crop&w=900&q=80',
-    },
-  },
-];
 
 const quickPrompts = [
   "Why are my laptop fans so loud?",
@@ -40,9 +18,11 @@ const quickPrompts = [
 
 const Chat = () => {
   const { activeDevice, experienceLevel, chatInitialQuery, resetChatInitialQuery } = useDashboard();
-  const [messages, setMessages] = useState(initialMessages);
+  const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
+  const [sessionId, setSessionId] = useState(null);
+  const [error, setError] = useState(null);
   const [showSafetyBanner, setShowSafetyBanner] = useState(true);
   const flatListRef = useRef(null);
 
@@ -54,44 +34,35 @@ const Chat = () => {
   }, [chatInitialQuery]);
 
   const sendAiResponse = async (messageText) => {
-    const payload = {
-      message: messageText,
-      device: activeDevice.name,
-      experienceLevel,
-      history: messages.map((m) => ({ role: m.sender, content: m.text })),
-    };
-
     try {
-      const response = await fetch('http://localhost:3000/api/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      });
+      const response = await api.sendMessage(messageText, sessionId);
 
-      if (!response.ok) throw new Error('API server unavailable');
-      const data = await response.json();
+      // Update session ID if new session was created
+      if (response.session_id && !sessionId) {
+        setSessionId(response.session_id);
+      }
+
+      // Check for high-risk safety warning
+      if (response.is_high_risk && response.warning_data) {
+        setShowSafetyBanner(true);
+      }
 
       return {
         id: `ai-${Date.now()}`,
         sender: 'ai',
-        text: data.reply || 'Analysis complete. Ensure all power supplies are disconnected before hardware maintenance.',
+        text: response.response_text,
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        steps: data.steps,
-        hasSafetyWarning: data.hasSafetyWarning,
-        recommendedVideo: data.recommendedVideo,
+        isHighRisk: response.is_high_risk,
+        warningData: response.warning_data,
       };
-    } catch (error) {
+    } catch (err) {
+      setError(err.message || 'Failed to get AI response');
       return {
         id: `ai-${Date.now()}`,
         sender: 'ai',
-        text: `Diagnostic report for ${activeDevice.name}: CPU usage is high and the system may be overheating. Check active processes, clear caches, and verify fan airflow.`,
+        text: `I apologize, but I'm having trouble connecting to the server right now. Please check your connection and try again.`,
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        steps: [
-          'Inspect thermal air intake and clean dust deposits.',
-          'Close unnecessary apps and background processes.',
-          'Verify fan speed and CPU temperature.',
-        ],
-        hasSafetyWarning: true,
+        isError: true,
       };
     }
   };
@@ -99,6 +70,8 @@ const Chat = () => {
   const handleSend = async (overrideText) => {
     const text = overrideText || input;
     if (!text.trim() || loading) return;
+
+    setError(null);
 
     const userMessage = {
       id: `user-${Date.now()}`,
@@ -118,6 +91,11 @@ const Chat = () => {
     setTimeout(() => flatListRef.current?.scrollToEnd({ animated: true }), 100);
   };
 
+  // Show device context banner
+  const deviceContext = activeDevice
+    ? `Troubleshooting: ${activeDevice.name}`
+    : 'No device registered';
+
   return (
     <StyledContainer>
       <StatusBar style="dark" />
@@ -125,8 +103,33 @@ const Chat = () => {
         <PageTitle>AI Troubleshooting</PageTitle>
         <SubTitle>Ask PC Doctor any hardware or performance question.</SubTitle>
 
-        {showSafetyBanner && (
+        {/* Device Context Banner */}
+        {activeDevice && (
+          <View style={styles.deviceBanner}>
+            <Feather name="laptop" size={16} color={brand} style={{ marginRight: 8 }} />
+            <Text style={styles.deviceText}>{deviceContext}</Text>
+          </View>
+        )}
+
+        {/* Safety Warning Banner (dynamic from backend) */}
+        {showSafetyBanner && messages.some(m => m.isHighRisk) && (
           <View style={styles.banner}>
+            <View style={styles.bannerIcon}>
+              <AntDesign name="exclamationcircle" size={18} color="#991B1B" />
+            </View>
+            <View style={styles.bannerTextContainer}>
+              <Text style={styles.bannerTitle}>⚠️ Safety Warning Active</Text>
+              <Text style={styles.bannerText}>The AI has detected a high-risk issue. Please follow safety instructions carefully.</Text>
+            </View>
+            <Pressable onPress={() => setShowSafetyBanner(false)}>
+              <Text style={styles.dismiss}>Dismiss</Text>
+            </Pressable>
+          </View>
+        )}
+
+        {/* Default Safety Banner */}
+        {showSafetyBanner && !messages.some(m => m.isHighRisk) && (
+          <View style={styles.defaultBanner}>
             <View style={styles.bannerIcon}>
               <AntDesign name="exclamationcircle" size={18} color="#92400E" />
             </View>
@@ -140,35 +143,57 @@ const Chat = () => {
           </View>
         )}
 
+        {/* Error State */}
+        {error && (
+          <View style={styles.errorBanner}>
+            <Text style={styles.errorText}>⚠️ {error}</Text>
+          </View>
+        )}
+
+        {/* Messages */}
         <View style={styles.messagesContainer}>
-          <FlatList
-            ref={flatListRef}
-            data={messages}
-            keyExtractor={(item) => item.id}
-            renderItem={({ item }) => (
-              <View style={[styles.messageBubble, item.sender === 'user' ? styles.userBubble : styles.aiBubble]}>
-                {item.sender === 'ai' && <Feather name="cpu" size={18} color={brand} style={{ marginBottom: 10 }} />}
-                <Text style={[styles.messageText, item.sender === 'user' ? styles.userText : styles.aiText]}>{item.text}</Text>
-                {item.steps?.length > 0 && (
-                  <View style={styles.stepList}>
-                    {item.steps.map((step, idx) => (
-                      <Text key={idx} style={styles.stepText}>{`${idx + 1}. ${step}`}</Text>
-                    ))}
-                  </View>
-                )}
-                {item.recommendedVideo && (
-                  <View style={styles.videoCard}>
-                    <Text style={styles.videoLabel}>Recommended Video</Text>
-                    <Text style={styles.videoTitle}>{item.recommendedVideo.title}</Text>
-                  </View>
-                )}
-                {item.hasSafetyWarning && <Text style={styles.safetyTip}>Safety: Stop if you suspect battery damage, smoke, or electrical hazard.</Text>}
-              </View>
-            )}
-            showsVerticalScrollIndicator={false}
-          />
+          {messages.length === 0 && !loading ? (
+            <View style={styles.emptyChat}>
+              <Feather name="message-circle" size={48} color={darkLight} />
+              <Text style={styles.emptyChatText}>Start a conversation with PC Doctor AI</Text>
+              <Text style={styles.emptyChatSubtext}>
+                {activeDevice
+                  ? `I'll help you troubleshoot your ${activeDevice.name}`
+                  : 'Ask me about any laptop issue'}
+              </Text>
+            </View>
+          ) : (
+            <FlatList
+              ref={flatListRef}
+              data={messages}
+              keyExtractor={(item) => item.id}
+              renderItem={({ item }) => (
+                <View style={[styles.messageBubble, item.sender === 'user' ? styles.userBubble : styles.aiBubble]}>
+                  {item.sender === 'ai' && <Feather name="cpu" size={18} color={brand} style={{ marginBottom: 10 }} />}
+                  <Text style={[styles.messageText, item.sender === 'user' ? styles.userText : styles.aiText]}>{item.text}</Text>
+
+                  {/* High Risk Warning */}
+                  {item.isHighRisk && item.warningData && (
+                    <View style={styles.warningCard}>
+                      <Text style={styles.warningTitle}>🚨 {item.warningData.warning_title || 'High Risk Detected'}</Text>
+                      {item.warningData.action_recommendation && (
+                        <Text style={styles.warningText}>{item.warningData.action_recommendation}</Text>
+                      )}
+                    </View>
+                  )}
+
+                  {/* Safety Tip */}
+                  {item.isHighRisk && (
+                    <Text style={styles.safetyTip}>Safety: Stop if you suspect battery damage, smoke, or electrical hazard.</Text>
+                  )}
+                </View>
+              )}
+              showsVerticalScrollIndicator={false}
+            />
+          )}
         </View>
 
+        {/* Quick Prompts */}
         <View style={styles.quickChips}>
           {quickPrompts.map((prompt) => (
             <Pressable key={prompt} style={styles.quickChip} onPress={() => handleSend(prompt)}>
@@ -177,6 +202,7 @@ const Chat = () => {
           ))}
         </View>
 
+        {/* Input Area */}
         <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.inputArea}>
           <TextInput
             value={input}
@@ -186,7 +212,7 @@ const Chat = () => {
             style={styles.input}
             multiline
           />
-          <Pressable style={styles.sendButton} onPress={() => handleSend()}>
+          <Pressable style={styles.sendButton} onPress={() => handleSend()} disabled={loading}>
             {loading ? <ActivityIndicator color="#FFFFFF" /> : <MaterialCommunityIcons name="send" size={20} color="#FFFFFF" />}
           </Pressable>
         </KeyboardAvoidingView>
@@ -196,7 +222,32 @@ const Chat = () => {
 };
 
 const styles = StyleSheet.create({
+  deviceBanner: {
+    backgroundColor: '#EEF2FF',
+    borderRadius: 16,
+    padding: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: '#C7D2FE',
+  },
+  deviceText: {
+    fontSize: 12,
+    color: '#3730A3',
+    fontWeight: '700',
+  },
   banner: {
+    backgroundColor: '#FEE2E2',
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: '#FECACA',
+    padding: 16,
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    marginBottom: 16,
+  },
+  defaultBanner: {
     backgroundColor: '#FEF3C7',
     borderRadius: 20,
     borderWidth: 1,
@@ -215,22 +266,52 @@ const styles = StyleSheet.create({
   bannerTitle: {
     fontSize: 12,
     fontWeight: '800',
-    color: '#92400E',
+    color: '#991B1B',
     marginBottom: 4,
   },
   bannerText: {
     fontSize: 12,
-    color: '#92400E',
+    color: '#991B1B',
     lineHeight: 18,
   },
   dismiss: {
-    color: '#92400E',
+    color: '#991B1B',
     fontWeight: '700',
+  },
+  errorBanner: {
+    backgroundColor: '#FEE2E2',
+    borderRadius: 12,
+    padding: 10,
+    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: '#FECACA',
+  },
+  errorText: {
+    fontSize: 12,
+    color: '#991B1B',
   },
   messagesContainer: {
     flex: 1,
     width: '100%',
     marginBottom: 14,
+  },
+  emptyChat: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 24,
+  },
+  emptyChatText: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#0F172A',
+    marginTop: 16,
+    marginBottom: 4,
+  },
+  emptyChatSubtext: {
+    fontSize: 13,
+    color: darkLight,
+    textAlign: 'center',
   },
   messageBubble: {
     marginVertical: 6,
@@ -256,30 +337,24 @@ const styles = StyleSheet.create({
   aiText: {
     color: '#0F172A',
   },
-  stepList: {
-    marginTop: 10,
-    paddingLeft: 10,
-  },
-  stepText: {
-    color: '#334155',
-    fontSize: 13,
-    marginBottom: 4,
-  },
-  videoCard: {
+  warningCard: {
     marginTop: 12,
-    backgroundColor: '#EEF2FF',
+    backgroundColor: '#FEE2E2',
     borderRadius: 16,
     padding: 12,
+    borderWidth: 1,
+    borderColor: '#FECACA',
   },
-  videoLabel: {
-    fontSize: 11,
-    color: '#2563EB',
-    fontWeight: '700',
-    marginBottom: 4,
-  },
-  videoTitle: {
+  warningTitle: {
     fontSize: 13,
-    color: '#0F172A',
+    fontWeight: '700',
+    color: '#991B1B',
+    marginBottom: 6,
+  },
+  warningText: {
+    fontSize: 12,
+    color: '#991B1B',
+    lineHeight: 18,
   },
   safetyTip: {
     marginTop: 10,
