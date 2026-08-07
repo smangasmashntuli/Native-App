@@ -17,7 +17,6 @@ import {
 import LoadingState from '../components/LoadingState';
 import ErrorState from '../components/ErrorState';
 import EmptyState from '../components/EmptyState';
-import HeaderCard from '../components/HeaderCard';
 
 const { brand, darkLight, tertiary } = Colors;
 
@@ -99,14 +98,11 @@ const Welcome = () => {
       <InnerContainer>
         <ScrollView
           style={{ width: '100%' }}
-          contentContainerStyle={{ paddingBottom: 36 }}
+          contentContainerStyle={{ paddingBottom: 36, paddingTop: 20 }}
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }
         >
-          {/* Header Card */}
-          <HeaderCard />
-
           <View style={{ marginBottom: 28 }}>
             <PageTitle>PC Doctor Dashboard</PageTitle>
             <SubTitle>Monitor your device, prioritize alerts, and start diagnostics.</SubTitle>
@@ -140,7 +136,7 @@ const Welcome = () => {
       <InnerContainer>
         <ScrollView
           style={{ width: '100%' }}
-          contentContainerStyle={{ paddingBottom: 36 }}
+          contentContainerStyle={{ paddingBottom: 36, paddingTop: 20 }}
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }
@@ -151,10 +147,10 @@ const Welcome = () => {
           </View>
 
           {/* Active Device Card */}
-          <View style={{ backgroundColor: '#EFF6FF', borderRadius: 28, padding: 24, marginBottom: 20, borderWidth: 1, borderColor: '#BFDBFE' }}>
-            <Text style={{ color: '#1D4ED8', fontSize: 16, fontWeight: '700', marginBottom: 12 }}>Active Device</Text>
+          <View style={{ backgroundColor: 'secondary', borderRadius: 28, padding: 24, marginBottom: 20, borderWidth: 1, borderColor: 'border' }}>
+            <Text style={{ color: 'brand', fontSize: 16, fontWeight: '700', marginBottom: 12 }}>Active Device</Text>
             <Text style={{ color: darkLight, fontSize: 13, marginBottom: 16 }}>{activeDevice.specs}</Text>
-            <Text style={{ color: '#0F172A', fontSize: 24, fontWeight: '800', marginBottom: 18 }}>{activeDevice.name}</Text>
+            <Text style={{ color: 'tertiary', fontSize: 24, fontWeight: '800', marginBottom: 18 }}>{activeDevice.name}</Text>
 
             {/* Laptop Image */}
             {activeDevice.image ? (
@@ -169,7 +165,7 @@ const Welcome = () => {
                 <LoadingState message="Fetching laptop image..." size="small" />
               </View>
             ) : (
-              <View style={{ marginBottom: 16, padding: 16, backgroundColor: '#F8FAFC', borderRadius: 12, alignItems: 'center' }}>
+              <View style={{ marginBottom: 16, padding: 16, backgroundColor: 'secondary', borderRadius: 12, alignItems: 'center' }}>
                 <Text style={{ color: darkLight, fontSize: 12, marginBottom: 8 }}>No image available</Text>
                 <TouchableOpacity onPress={handleTriggerIngestion}>
                   <Text style={{ color: brand, fontSize: 12, fontWeight: '700' }}>Fetch Specs & Image</Text>
@@ -180,9 +176,9 @@ const Welcome = () => {
             {/* Spec Cards */}
             <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' }}>
               {specCards.map((card) => (
-                <View key={card.key} style={{ width: '48%', backgroundColor: '#FFFFFF', borderRadius: 20, padding: 16, marginBottom: 12, borderWidth: 1, borderColor: '#DBEAFE' }}>
+                <View key={card.key} style={{ width: '48%', backgroundColor: '#FFFFFF', borderRadius: 20, padding: 16, marginBottom: 12, borderWidth: 1, borderColor: 'secondary' }}>
                   <Text style={{ fontSize: 12, color: darkLight, marginBottom: 8 }}>{card.label}</Text>
-                  <Text style={{ fontSize: 14, fontWeight: '700', color: '#0F172A' }}>{card.value}</Text>
+                  <Text style={{ fontSize: 14, fontWeight: '700', color: 'tertiary' }}>{card.value}</Text>
                 </View>
               ))}
             </View>
@@ -205,21 +201,21 @@ const Welcome = () => {
 
             {/* Known Issues */}
             {laptopSpecs?.known_issues && laptopSpecs.known_issues.length > 0 && (
-              <View style={{ marginTop: 12, padding: 12, backgroundColor: '#FEF3C7', borderRadius: 16, borderWidth: 1, borderColor: '#FDE68A' }}>
-                <Text style={{ fontSize: 12, fontWeight: '700', color: '#92400E', marginBottom: 6 }}>Known Issues:</Text>
+              <View style={{ marginTop: 12, padding: 12, backgroundColor: 'Colors.warning + "33"', borderRadius: 16, borderWidth: 1, borderColor: 'Colors.warning' }}>
+                <Text style={{ fontSize: 12, fontWeight: '700', color: 'tertiary', marginBottom: 6 }}>Known Issues:</Text>
                 {laptopSpecs.known_issues.slice(0, 3).map((issue, idx) => (
-                  <Text key={idx} style={{ fontSize: 11, color: '#92400E', marginBottom: 2 }}>• {issue}</Text>
+                  <Text key={idx} style={{ fontSize: 11, color: 'tertiary', marginBottom: 2 }}>• {issue}</Text>
                 ))}
               </View>
             )}
           </View>
 
           {/* Latest Alert */}
-          <View style={{ backgroundColor: '#DBEAFE', borderRadius: 24, padding: 20, marginBottom: 20, borderWidth: 1, borderColor: '#BFDBFE' }}>
-            <Text style={{ fontSize: 15, fontWeight: '700', color: '#1D4ED8', marginBottom: 8 }}>Latest Alert</Text>
+          <View style={{ backgroundColor: 'secondary', borderRadius: 24, padding: 20, marginBottom: 20, borderWidth: 1, borderColor: 'border' }}>
+            <Text style={{ fontSize: 15, fontWeight: '700', color: 'brand', marginBottom: 8 }}>Latest Alert</Text>
             {latestAlert ? (
               <>
-                <Text style={{ fontSize: 14, color: '#0F172A', fontWeight: '700' }}>{latestAlert.title}</Text>
+                <Text style={{ fontSize: 14, color: 'tertiary', fontWeight: '700' }}>{latestAlert.title}</Text>
                 <Text style={{ color: darkLight, marginTop: 6 }}>{latestAlert.message}</Text>
                 <Text style={{ color: darkLight, marginTop: 8, fontSize: 12 }}>
                   {latestAlert.priority} • {new Date(latestAlert.created_at).toLocaleDateString()}
@@ -248,7 +244,7 @@ const Welcome = () => {
 
           {/* Logout */}
           <View style={{ marginBottom: 12 }}>
-            <StyledButton onPress={handleLogout} style={{ backgroundColor: '#F97316' }}>
+            <StyledButton onPress={handleLogout} style={{ backgroundColor: 'brand' }}>
               <ButtonText>Logout</ButtonText>
             </StyledButton>
           </View>

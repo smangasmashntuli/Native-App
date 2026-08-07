@@ -4,16 +4,14 @@ import { useAuth } from '../context/AuthContext';
 import { useDashboard } from '../context/DashboardContext';
 import { Colors } from './style';
 
-const { brand, darkLight } = Colors;
+const { brand, darkLight, secondary, tertiary, border } = Colors;
 
 /**
- * Reusable header card component for all screens
- * 
+ * Global top header that persists across the main app screens.
+ *
  * Layout:
- * - Left: Logo + "PC-Doctor AI" + laptop name
- * - Right: Circular profile picture
- * 
- * @param {object} style - Additional styles for the container
+ * - Left: Logo + title + device name
+ * - Right: Circular profile avatar
  */
 const HeaderCard = ({ style }) => {
   const { user } = useAuth();
@@ -74,22 +72,20 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: '#FFFFFF',
-    borderRadius: 20,
-    padding: 16,
-    marginHorizontal: 4,
-    marginTop: 8,
-    marginBottom: 16,
-    borderWidth: 1,
-    borderColor: '#E2E8F0',
+    backgroundColor: secondary,
+    borderBottomWidth: 1,
+    borderBottomColor: border,
+    paddingVertical: 16,
+    paddingHorizontal: 20,
+    width: '100%',
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
-      height: 2,
+      height: 1,
     },
-    shadowOpacity: 0.05,
-    shadowRadius: 3.84,
-    elevation: 5,
+    shadowOpacity: 0.08,
+    shadowRadius: 4,
+    elevation: 2,
   },
   leftSection: {
     flexDirection: 'row',
@@ -108,7 +104,7 @@ const styles = StyleSheet.create({
   appName: {
     fontSize: 18,
     fontWeight: '800',
-    color: '#0F172A',
+    color: tertiary,
     marginBottom: 2,
   },
   laptopName: {

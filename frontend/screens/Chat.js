@@ -7,7 +7,6 @@ import { AntDesign, Feather, MaterialCommunityIcons } from '@expo/vector-icons';
 import api from '../api/apiService';
 import LoadingState from '../components/LoadingState';
 import ErrorState from '../components/ErrorState';
-import HeaderCard from '../components/HeaderCard';
 
 const { brand, darkLight, tertiary } = Colors;
 
@@ -101,7 +100,6 @@ const Chat = () => {
     <StyledContainer>
       <StatusBar style="dark" />
       <InnerContainer>
-        <HeaderCard />
         <PageTitle>AI Troubleshooting</PageTitle>
         <SubTitle>Ask PC Doctor any hardware or performance question.</SubTitle>
 
@@ -117,7 +115,7 @@ const Chat = () => {
         {showSafetyBanner && messages.some(m => m.isHighRisk) && (
           <View style={styles.banner}>
             <View style={styles.bannerIcon}>
-              <AntDesign name="exclamationcircle" size={18} color="#991B1B" />
+              <AntDesign name="exclamationcircle" size={18} color="tertiary" />
             </View>
             <View style={styles.bannerTextContainer}>
               <Text style={styles.bannerTitle}>⚠️ Safety Warning Active</Text>
@@ -133,7 +131,7 @@ const Chat = () => {
         {showSafetyBanner && !messages.some(m => m.isHighRisk) && (
           <View style={styles.defaultBanner}>
             <View style={styles.bannerIcon}>
-              <AntDesign name="exclamationcircle" size={18} color="#92400E" />
+              <AntDesign name="exclamationcircle" size={18} color="tertiary" />
             </View>
             <View style={styles.bannerTextContainer}>
               <Text style={styles.bannerTitle}>Hardware Safety Warning</Text>
@@ -225,35 +223,35 @@ const Chat = () => {
 
 const styles = StyleSheet.create({
   deviceBanner: {
-    backgroundColor: '#EEF2FF',
+    backgroundColor: secondary,
     borderRadius: 16,
     padding: 12,
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 12,
     borderWidth: 1,
-    borderColor: '#C7D2FE',
+    borderColor: border,
   },
   deviceText: {
     fontSize: 12,
-    color: '#3730A3',
+    color: tertiary,
     fontWeight: '700',
   },
   banner: {
-    backgroundColor: '#FEE2E2',
+    backgroundColor: Colors.warning + '33',
     borderRadius: 20,
     borderWidth: 1,
-    borderColor: '#FECACA',
+    borderColor: Colors.warning,
     padding: 16,
     flexDirection: 'row',
     alignItems: 'flex-start',
     marginBottom: 16,
   },
   defaultBanner: {
-    backgroundColor: '#FEF3C7',
+    backgroundColor: Colors.warning + '33',
     borderRadius: 20,
     borderWidth: 1,
-    borderColor: '#FDE68A',
+    borderColor: Colors.warning,
     padding: 16,
     flexDirection: 'row',
     alignItems: 'flex-start',
@@ -268,29 +266,29 @@ const styles = StyleSheet.create({
   bannerTitle: {
     fontSize: 12,
     fontWeight: '800',
-    color: '#991B1B',
+    color: tertiary,
     marginBottom: 4,
   },
   bannerText: {
     fontSize: 12,
-    color: '#991B1B',
+    color: tertiary,
     lineHeight: 18,
   },
   dismiss: {
-    color: '#991B1B',
+    color: tertiary,
     fontWeight: '700',
   },
   errorBanner: {
-    backgroundColor: '#FEE2E2',
+    backgroundColor: Colors.warning + '33',
     borderRadius: 12,
     padding: 10,
     marginBottom: 12,
     borderWidth: 1,
-    borderColor: '#FECACA',
+    borderColor: Colors.warning,
   },
   errorText: {
     fontSize: 12,
-    color: '#991B1B',
+    color: tertiary,
   },
   messagesContainer: {
     flex: 1,
@@ -306,7 +304,7 @@ const styles = StyleSheet.create({
   emptyChatText: {
     fontSize: 16,
     fontWeight: '700',
-    color: '#0F172A',
+    color: 'tertiary',
     marginTop: 16,
     marginBottom: 4,
   },
@@ -323,45 +321,45 @@ const styles = StyleSheet.create({
   },
   userBubble: {
     alignSelf: 'flex-end',
-    backgroundColor: '#EDE9FE',
+    backgroundColor: 'secondary',
   },
   aiBubble: {
     alignSelf: 'flex-start',
-    backgroundColor: '#F8FAFC',
+    backgroundColor: 'secondary',
   },
   messageText: {
     fontSize: 14,
     lineHeight: 20,
   },
   userText: {
-    color: '#3730A3',
+    color: brand,
   },
   aiText: {
-    color: '#0F172A',
+    color: tertiary,
   },
   warningCard: {
     marginTop: 12,
-    backgroundColor: '#FEE2E2',
+    backgroundColor: Colors.warning + '33',
     borderRadius: 16,
     padding: 12,
     borderWidth: 1,
-    borderColor: '#FECACA',
+    borderColor: Colors.warning,
   },
   warningTitle: {
     fontSize: 13,
     fontWeight: '700',
-    color: '#991B1B',
+    color: 'tertiary',
     marginBottom: 6,
   },
   warningText: {
     fontSize: 12,
-    color: '#991B1B',
+    color: 'tertiary',
     lineHeight: 18,
   },
   safetyTip: {
     marginTop: 10,
     fontSize: 12,
-    color: '#991B1B',
+    color: 'tertiary',
     fontWeight: '700',
   },
   quickChips: {
@@ -371,7 +369,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   quickChip: {
-    backgroundColor: '#F1F5F9',
+    backgroundColor: 'secondary',
     borderRadius: 999,
     paddingVertical: 10,
     paddingHorizontal: 14,
@@ -380,7 +378,7 @@ const styles = StyleSheet.create({
   },
   quickChipText: {
     fontSize: 11,
-    color: '#475569',
+    color: 'tertiary',
     fontWeight: '700',
   },
   inputArea: {
@@ -393,11 +391,11 @@ const styles = StyleSheet.create({
     minHeight: 48,
     maxHeight: 120,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: 'border',
     borderRadius: 20,
     paddingHorizontal: 16,
     paddingVertical: 12,
-    color: '#0F172A',
+    color: 'tertiary',
     backgroundColor: '#FFFFFF',
     fontSize: 14,
   },
