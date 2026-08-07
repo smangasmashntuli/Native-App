@@ -11,6 +11,7 @@ import {
     StyledContainer,
     InnerContainer,
     PageTitle,
+    PageLogo,
     StyledFormArea,
     SubTitle,
     LeftIcon,
@@ -87,6 +88,7 @@ const SignUp = () => {
             <StatusBar style="dark" />
             <InnerContainer>
                 <View style={{ width: '100%', backgroundColor: '#FFFFFF', borderRadius: 30, padding: 26, shadowColor: '#0F172A', shadowOpacity: 0.08, shadowOffset: { width: 0, height: 10 }, shadowRadius: 24, elevation: 6 }}>
+                    <PageLogo resizeMode="cover" source={require('../image/logo.png')} />
                     <PageTitle>Create Account</PageTitle>
                     <SubTitle>Get started with your PC Doctor profile.</SubTitle>
 

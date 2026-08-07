@@ -1,6 +1,6 @@
 // style.js
 import styled from 'styled-components/native';
-import { View, Text, TextInput, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Image } from 'react-native';
 import Constants from 'expo-constants';
 
 const StatusBarHeight = Constants.statusBarHeight;
@@ -29,6 +29,11 @@ export const InnerContainer = styled.View`
     width: 100%;
     align-items: center;
 `;
+export const PageLogo = styled.Image`
+    width: 250px;
+    height: 200px;
+    align-self: center;
+`;
 
 export const PageTitle = styled.Text`
     font-size: 32px;
@@ -40,6 +45,7 @@ export const PageTitle = styled.Text`
 
 export const SubTitle = styled.Text`
     font-size: 17px;
+    text-align: center;
     margin-bottom: 24px;
     letter-spacing: 0.5px;
     font-weight: 600;
@@ -70,18 +76,19 @@ export const StyledInputLabel = styled.Text`
     margin-bottom: 5px;
 `;
 
-// Fix: Change LeftIcon to use a different approach
+
 export const LeftIcon = styled.View`
     position: absolute;
-    left: 15px;
-    top: 38px;
+    top: 50%;
+    transform: translateY(-12px);
+    left: 15px;    
     z-index: 1;
 `;
 
 export const RightIcon = styled.TouchableOpacity`
     position: absolute;
-    right: 15px;
-    top: 38px;
+    top: 50%;
+    left: 15px;
     z-index: 1;
 `;
 
