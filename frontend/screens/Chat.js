@@ -7,6 +7,7 @@ import { AntDesign, Feather, MaterialCommunityIcons } from '@expo/vector-icons';
 import api from '../api/apiService';
 import LoadingState from '../components/LoadingState';
 import ErrorState from '../components/ErrorState';
+import HeaderCard from '../components/HeaderCard';
 
 const { brand, darkLight, tertiary } = Colors;
 
@@ -100,6 +101,7 @@ const Chat = () => {
     <StyledContainer>
       <StatusBar style="dark" />
       <InnerContainer>
+        <HeaderCard />
         <PageTitle>AI Troubleshooting</PageTitle>
         <SubTitle>Ask PC Doctor any hardware or performance question.</SubTitle>
 

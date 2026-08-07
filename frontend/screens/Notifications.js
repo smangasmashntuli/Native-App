@@ -7,6 +7,7 @@ import { AntDesign, MaterialCommunityIcons } from '@expo/vector-icons';
 import LoadingState from '../components/LoadingState';
 import ErrorState from '../components/ErrorState';
 import EmptyState from '../components/EmptyState';
+import HeaderCard from '../components/HeaderCard';
 
 const { tertiary, brand, darkLight } = Colors;
 
@@ -112,6 +113,7 @@ const Notifications = () => {
             <RefreshControl refreshing={loadingNotifications} onRefresh={onRefresh} />
           }
         >
+          <HeaderCard />
           <PageTitle>System Alerts</PageTitle>
           <SubTitle>Live hardware notifications and security advisories.</SubTitle>
 
