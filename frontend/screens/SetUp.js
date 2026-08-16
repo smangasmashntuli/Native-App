@@ -76,7 +76,7 @@ const SetUp = () => {
         <StyledContainer>
             <StatusBar style="dark" />
             <InnerContainer>
-                <View style={{ width: '100%', backgroundColor: '#FFFFFF', borderRadius: 30, padding: 26, shadowColor: '#0F172A', shadowOpacity: 0.08, shadowOffset: { width: 0, height: 10 }, shadowRadius: 24, elevation: 6 }}>
+                <View style={{ width: '100%', backgroundColor: '#FFFFFF', borderRadius: 30, padding: 26, shadowColor: 'tertiary', shadowOpacity: 0.08, shadowOffset: { width: 0, height: 10 }, shadowRadius: 24, elevation: 6 }}>
                     <PageTitle>Device Setup</PageTitle>
                     <SubTitle>Connect your system to PC Doctor AI.</SubTitle>
 
@@ -92,7 +92,7 @@ const SetUp = () => {
                                     onBlur={handleBlur('brand')}
                                     value={values.brand}
                                 />
-                                {touched.brand && errors.brand && <Text style={{ color: '#DC2626', fontSize: 12, marginBottom: 10 }}>{errors.brand}</Text>}
+                                {touched.brand && errors.brand && <Text style={{ color: 'Colors.warning', fontSize: 12, marginBottom: 10 }}>{errors.brand}</Text>}
 
                                 <MyTextInput
                                     label="Model"
@@ -103,7 +103,7 @@ const SetUp = () => {
                                     onBlur={handleBlur('model')}
                                     value={values.model}
                                 />
-                                {touched.model && errors.model && <Text style={{ color: '#DC2626', fontSize: 12, marginBottom: 10 }}>{errors.model}</Text>}
+                                {touched.model && errors.model && <Text style={{ color: 'Colors.warning', fontSize: 12, marginBottom: 10 }}>{errors.model}</Text>}
 
                                 <StyledButton onPress={handleSubmit} disabled={isLoading} style={{ backgroundColor: brand }}>
                                     {isLoading ? (

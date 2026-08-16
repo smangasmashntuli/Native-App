@@ -87,7 +87,7 @@ const SignUp = () => {
         <StyledContainer>
             <StatusBar style="dark" />
             <InnerContainer>
-                <View style={{ width: '100%', backgroundColor: '#FFFFFF', borderRadius: 30, padding: 26, shadowColor: '#0F172A', shadowOpacity: 0.08, shadowOffset: { width: 0, height: 10 }, shadowRadius: 24, elevation: 6 }}>
+                <View style={{ width: '100%', backgroundColor: '#FFFFFF', borderRadius: 30, padding: 26, shadowColor: 'tertiary', shadowOpacity: 0.08, shadowOffset: { width: 0, height: 10 }, shadowRadius: 24, elevation: 6 }}>
                     <PageLogo resizeMode="cover" source={require('../image/logo.png')} />
                     <PageTitle>Create Account</PageTitle>
                     <SubTitle>Get started with your PC Doctor profile.</SubTitle>
@@ -103,7 +103,7 @@ const SignUp = () => {
                                     onBlur={handleBlur('name')}
                                     value={values.name}
                                 />
-                                {touched.name && errors.name && <Text style={{ color: '#DC2626', fontSize: 12, marginBottom: 10 }}>{errors.name}</Text>}
+                                {touched.name && errors.name && <Text style={{ color: 'Colors.warning', fontSize: 12, marginBottom: 10 }}>{errors.name}</Text>}
 
                                 <MyTextInput
                                     label="Surname"
@@ -113,7 +113,7 @@ const SignUp = () => {
                                     onBlur={handleBlur('surname')}
                                     value={values.surname}
                                 />
-                                {touched.surname && errors.surname && <Text style={{ color: '#DC2626', fontSize: 12, marginBottom: 10 }}>{errors.surname}</Text>}
+                                {touched.surname && errors.surname && <Text style={{ color: 'Colors.warning', fontSize: 12, marginBottom: 10 }}>{errors.surname}</Text>}
 
                                 <MyTextInput
                                     label="Email Address"
@@ -124,7 +124,7 @@ const SignUp = () => {
                                     onBlur={handleBlur('email')}
                                     value={values.email}
                                 />
-                                {touched.email && errors.email && <Text style={{ color: '#DC2626', fontSize: 12, marginBottom: 10 }}>{errors.email}</Text>}
+                                {touched.email && errors.email && <Text style={{ color: 'Colors.warning', fontSize: 12, marginBottom: 10 }}>{errors.email}</Text>}
 
                                 <MyTextInput
                                     label="Password"
@@ -136,7 +136,7 @@ const SignUp = () => {
                                     value={values.password}
                                     secureTextEntry
                                 />
-                                {touched.password && errors.password && <Text style={{ color: '#DC2626', fontSize: 12, marginBottom: 10 }}>{errors.password}</Text>}
+                                {touched.password && errors.password && <Text style={{ color: 'Colors.warning', fontSize: 12, marginBottom: 10 }}>{errors.password}</Text>}
 
                                 <MyTextInput
                                     label="Confirm Password"
@@ -148,7 +148,7 @@ const SignUp = () => {
                                     value={values.confirmPassword}
                                     secureTextEntry
                                 />
-                                {touched.confirmPassword && errors.confirmPassword && <Text style={{ color: '#DC2626', fontSize: 12, marginBottom: 10 }}>{errors.confirmPassword}</Text>}
+                                {touched.confirmPassword && errors.confirmPassword && <Text style={{ color: 'Colors.warning', fontSize: 12, marginBottom: 10 }}>{errors.confirmPassword}</Text>}
 
                                 <StyledButton onPress={handleSubmit} disabled={isLoading} style={{ backgroundColor: brand }}>
                                     {isLoading ? (

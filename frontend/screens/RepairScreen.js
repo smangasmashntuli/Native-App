@@ -9,7 +9,6 @@ import LoadingState from '../components/LoadingState';
 import ErrorState from '../components/ErrorState';
 import EmptyState from '../components/EmptyState';
 import ComponentInfoModal from '../components/ComponentInfoModal';
-import HeaderCard from '../components/HeaderCard';
 
 const { brand, darkLight, tertiary } = Colors;
 
@@ -20,24 +19,24 @@ const COMPONENT_LAYOUT = [
     icon: 'memory',
     description: 'Random Access Memory',
     position: { top: '30%', left: '15%', width: '30%', height: '15%' },
-    color: '#DBEAFE',
-    borderColor: '#3B82F6',
+    color: 'secondary',
+    borderColor: 'brand',
   },
   {
     name: 'SSD',
     icon: 'harddisk',
     description: 'Solid State Drive',
     position: { top: '50%', left: '55%', width: '25%', height: '12%' },
-    color: '#D1FAE5',
-    borderColor: '#10B981',
+    color: 'secondary',
+    borderColor: 'brand',
   },
   {
     name: 'Battery',
     icon: 'battery',
     description: 'Power Source',
     position: { top: '65%', left: '20%', width: '50%', height: '15%' },
-    color: '#FEE2E2',
-    borderColor: '#EF4444',
+    color: 'Colors.warning + "33"',
+    borderColor: 'Colors.warning',
     isRisky: true,
   },
   {
@@ -45,8 +44,8 @@ const COMPONENT_LAYOUT = [
     icon: 'fan',
     description: 'Cooling System',
     position: { top: '15%', left: '55%', width: '25%', height: '15%' },
-    color: '#FEF3C7',
-    borderColor: '#F59E0B',
+    color: 'Colors.warning + "33"',
+    borderColor: 'Colors.warning',
   },
   {
     name: 'Cover',
@@ -54,7 +53,7 @@ const COMPONENT_LAYOUT = [
     description: 'Bottom Cover',
     position: { top: '5%', left: '5%', width: '90%', height: '90%' },
     color: 'transparent',
-    borderColor: '#94A3B8',
+    borderColor: 'border',
     isBase: true,
   },
 ];
@@ -172,12 +171,11 @@ const RepairScreen = () => {
       <InnerContainer>
         <ScrollView
           style={{ width: '100%' }}
-          contentContainerStyle={{ paddingBottom: 36 }}
+          contentContainerStyle={{ paddingBottom: 36, paddingTop: 20 }}
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }
         >
-          <HeaderCard />
           <View style={{ marginBottom: 20 }}>
             <PageTitle>Interactive Repair</PageTitle>
             <SubTitle>Tap components to learn about your {activeDevice.name}</SubTitle>
@@ -216,13 +214,13 @@ const RepairScreen = () => {
                   activeOpacity={0.7}
                 >
                   <View style={styles.componentIcon}>
-                    <MaterialCommunityIcons name={component.icon} size={28} color="#0F172A" />
+                    <MaterialCommunityIcons name={component.icon} size={28} color="tertiary" />
                   </View>
                   <Text style={styles.componentName}>{component.name}</Text>
                   <Text style={styles.componentDesc}>{component.description}</Text>
                   {component.isRisky && (
                     <View style={styles.riskyBadge}>
-                      <AntDesign name="exclamationcircle" size={10} color="#991B1B" />
+                      <AntDesign name="exclamationcircle" size={10} color="tertiary" />
                       <Text style={styles.riskyText}>Caution</Text>
                     </View>
                   )}
@@ -233,7 +231,7 @@ const RepairScreen = () => {
 
           {/* Safety Warning */}
           <View style={styles.safetyBanner}>
-            <AntDesign name="exclamationcircle" size={18} color="#92400E" style={{ marginRight: 8 }} />
+            <AntDesign name="exclamationcircle" size={18} color="tertiary" style={{ marginRight: 8 }} />
             <View style={{ flex: 1 }}>
               <Text style={styles.safetyTitle}>Safety First</Text>
               <Text style={styles.safetyMessage}>
@@ -272,10 +270,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 20,
     padding: 16,
-    backgroundColor: '#F8FAFC',
+    backgroundColor: 'secondary',
     borderRadius: 20,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: 'border',
   },
   laptopImage: {
     width: 250,
@@ -288,7 +286,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 16,
     fontWeight: '700',
-    color: '#0F172A',
+    color: 'tertiary',
     marginBottom: 4,
   },
   sectionSubtitle: {
@@ -316,7 +314,7 @@ const styles = StyleSheet.create({
   componentName: {
     fontSize: 14,
     fontWeight: '700',
-    color: '#0F172A',
+    color: 'tertiary',
     marginBottom: 4,
   },
   componentDesc: {
@@ -330,49 +328,49 @@ const styles = StyleSheet.create({
     right: 8,
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#FEE2E2',
+    backgroundColor: 'Colors.warning + "33"',
     borderRadius: 8,
     paddingHorizontal: 6,
     paddingVertical: 2,
   },
   riskyText: {
     fontSize: 9,
-    color: '#991B1B',
+    color: 'tertiary',
     fontWeight: '700',
     marginLeft: 2,
   },
   safetyBanner: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    backgroundColor: '#FEF3C7',
+    backgroundColor: 'Colors.warning + "33"',
     borderRadius: 20,
     borderWidth: 1,
-    borderColor: '#FDE68A',
+    borderColor: 'Colors.warning',
     padding: 16,
     marginBottom: 20,
   },
   safetyTitle: {
     fontSize: 13,
     fontWeight: '700',
-    color: '#92400E',
+    color: 'tertiary',
     marginBottom: 4,
   },
   safetyMessage: {
     fontSize: 12,
-    color: '#92400E',
+    color: 'tertiary',
     lineHeight: 18,
   },
   modelInfoCard: {
-    backgroundColor: '#F8FAFC',
+    backgroundColor: 'secondary',
     borderRadius: 20,
     padding: 16,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: 'border',
   },
   modelInfoTitle: {
     fontSize: 14,
     fontWeight: '700',
-    color: '#0F172A',
+    color: 'tertiary',
     marginBottom: 8,
   },
   modelInfoText: {
