@@ -8,7 +8,7 @@ import api from '../api/apiService';
 import LoadingState from '../components/LoadingState';
 import ErrorState from '../components/ErrorState';
 
-const { brand, darkLight, tertiary } = Colors;
+const { brand, darkLight, tertiary, secondary, border, warning } = Colors;
 
 const quickPrompts = [
   "Why are my laptop fans so loud?",
@@ -115,7 +115,7 @@ const Chat = () => {
         {showSafetyBanner && messages.some(m => m.isHighRisk) && (
           <View style={styles.banner}>
             <View style={styles.bannerIcon}>
-              <AntDesign name="exclamationcircle" size={18} color="tertiary" />
+              <AntDesign name="exclamationcircle" size={18} color={tertiary} />
             </View>
             <View style={styles.bannerTextContainer}>
               <Text style={styles.bannerTitle}>⚠️ Safety Warning Active</Text>
@@ -131,7 +131,7 @@ const Chat = () => {
         {showSafetyBanner && !messages.some(m => m.isHighRisk) && (
           <View style={styles.defaultBanner}>
             <View style={styles.bannerIcon}>
-              <AntDesign name="exclamationcircle" size={18} color="tertiary" />
+              <AntDesign name="exclamationcircle" size={18} color={tertiary} />
             </View>
             <View style={styles.bannerTextContainer}>
               <Text style={styles.bannerTitle}>Hardware Safety Warning</Text>
@@ -304,7 +304,7 @@ const styles = StyleSheet.create({
   emptyChatText: {
     fontSize: 16,
     fontWeight: '700',
-    color: 'tertiary',
+    color: tertiary,
     marginTop: 16,
     marginBottom: 4,
   },
@@ -321,11 +321,11 @@ const styles = StyleSheet.create({
   },
   userBubble: {
     alignSelf: 'flex-end',
-    backgroundColor: 'secondary',
+    backgroundColor: secondary,
   },
   aiBubble: {
     alignSelf: 'flex-start',
-    backgroundColor: 'secondary',
+    backgroundColor: secondary,
   },
   messageText: {
     fontSize: 14,
@@ -348,18 +348,18 @@ const styles = StyleSheet.create({
   warningTitle: {
     fontSize: 13,
     fontWeight: '700',
-    color: 'tertiary',
+    color: tertiary,
     marginBottom: 6,
   },
   warningText: {
     fontSize: 12,
-    color: 'tertiary',
+    color: tertiary,
     lineHeight: 18,
   },
   safetyTip: {
     marginTop: 10,
     fontSize: 12,
-    color: 'tertiary',
+    color: tertiary,
     fontWeight: '700',
   },
   quickChips: {
@@ -369,7 +369,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   quickChip: {
-    backgroundColor: 'secondary',
+    backgroundColor: secondary,
     borderRadius: 999,
     paddingVertical: 10,
     paddingHorizontal: 14,
@@ -378,7 +378,7 @@ const styles = StyleSheet.create({
   },
   quickChipText: {
     fontSize: 11,
-    color: 'tertiary',
+    color: tertiary,
     fontWeight: '700',
   },
   inputArea: {
@@ -391,11 +391,11 @@ const styles = StyleSheet.create({
     minHeight: 48,
     maxHeight: 120,
     borderWidth: 1,
-    borderColor: 'border',
+    borderColor: border,
     borderRadius: 20,
     paddingHorizontal: 16,
     paddingVertical: 12,
-    color: 'tertiary',
+    color: tertiary,
     backgroundColor: '#FFFFFF',
     fontSize: 14,
   },

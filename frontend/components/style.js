@@ -81,15 +81,14 @@ export const StyledInputLabel = styled.Text`
 
 export const LeftIcon = styled.View`
     position: absolute;
-    top: 50%;
-    transform: translateY(-12px);
-    left: 15px;    
+    top: 18px;
+    left: 15px;
     z-index: 1;
 `;
 
 export const RightIcon = styled.TouchableOpacity`
     position: absolute;
-    top: 50%;
+    top: 18px;
     left: 15px;
     z-index: 1;
 `;
