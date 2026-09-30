@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { Formik } from 'formik';
 import { Octicons } from '@expo/vector-icons';
-import { View, Text, Alert, ActivityIndicator } from 'react-native';
+import { View, Text, Alert, ActivityIndicator, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '../context/AuthContext';
 
@@ -70,8 +70,17 @@ const Login = () => {
     return (
         <StyledContainer>
             <StatusBar style="dark" />
-            <InnerContainer>
-                <View style={{ width: '100%', backgroundColor: '#FFFFFF', borderRadius: 30, padding: 26, shadowColor: 'tertiary', shadowOpacity: 0.08, shadowOffset: { width: 0, height: 10 }, shadowRadius: 24, elevation: 6 }}>
+            <KeyboardAvoidingView
+                style={{ flex: 1, width: '100%' }}
+                behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            >
+                <ScrollView
+                    contentContainerStyle={{ flexGrow: 1, paddingBottom: 32 }}
+                    keyboardShouldPersistTaps="handled"
+                    showsVerticalScrollIndicator={false}
+                >
+                    <InnerContainer>
+                        <View style={{ width: '100%', backgroundColor: '#FFFFFF', borderRadius: 30, padding: 26, shadowColor: 'tertiary', shadowOpacity: 0.08, shadowOffset: { width: 0, height: 10 }, shadowRadius: 24, elevation: 6 }}>
                     <PageLogo resizeMode="cover" source={require('../image/logo.png')} />
                     <PageTitle>PC Doctor</PageTitle>
                     <SubTitle>Sign in to continue your diagnostics.</SubTitle>
@@ -118,8 +127,10 @@ const Login = () => {
                             </StyledFormArea>
                         )}
                     </Formik>
-                </View>
-            </InnerContainer>
+                        </View>
+                    </InnerContainer>
+                </ScrollView>
+            </KeyboardAvoidingView>
         </StyledContainer>
     );
 };

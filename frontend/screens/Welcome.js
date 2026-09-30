@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { ScrollView, View, Text, Image, TouchableOpacity, RefreshControl } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { useAuth } from '../context/AuthContext';
 import { useDashboard } from '../context/DashboardContext';
 import {
   StyledContainer,
@@ -22,7 +21,6 @@ const { brand, darkLight, tertiary } = Colors;
 
 const Welcome = () => {
   const navigation = useNavigation();
-  const { logout, user } = useAuth();
   const {
     activeDevice,
     laptopSetup,
@@ -49,11 +47,6 @@ const Welcome = () => {
     setRefreshing(true);
     await Promise.all([loadLaptopData(), loadNotifications()]);
     setRefreshing(false);
-  };
-
-  const handleLogout = async () => {
-    await logout();
-    navigation.navigate('Login');
   };
 
   const handleTriggerIngestion = async () => {
@@ -242,12 +235,6 @@ const Welcome = () => {
             </StyledButton>
           </View>
 
-          {/* Logout */}
-          <View style={{ marginBottom: 12 }}>
-            <StyledButton onPress={handleLogout} style={{ backgroundColor: 'brand' }}>
-              <ButtonText>Logout</ButtonText>
-            </StyledButton>
-          </View>
         </ScrollView>
       </InnerContainer>
     </StyledContainer>
