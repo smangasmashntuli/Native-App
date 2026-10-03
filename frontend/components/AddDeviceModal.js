@@ -53,27 +53,27 @@ const AddDeviceModal = ({ isOpen, onClose, onAddDevice }) => {
                 value={name}
                 onChangeText={setName}
                 placeholder="e.g. Alienware M18"
-                placeholderTextColor="#9CA3AF"
+                placeholderTextColor="#8A9099"
               />
             </View>
             <View style={styles.row}>
               <View style={styles.inputGroupHalf}>
                 <Text style={styles.label}>CPU</Text>
-                <TextInput style={styles.input} value={processor} onChangeText={setProcessor} placeholder="Intel Core i9-14900K" placeholderTextColor="#9CA3AF" />
+                <TextInput style={styles.input} value={processor} onChangeText={setProcessor} placeholder="Intel Core i9-14900K" placeholderTextColor="#8A9099" />
               </View>
               <View style={styles.inputGroupHalf}>
                 <Text style={styles.label}>Memory</Text>
-                <TextInput style={styles.input} value={ram} onChangeText={setRam} placeholder="32GB DDR5" placeholderTextColor="#9CA3AF" />
+                <TextInput style={styles.input} value={ram} onChangeText={setRam} placeholder="32GB DDR5" placeholderTextColor="#8A9099" />
               </View>
             </View>
             <View style={styles.row}>
               <View style={styles.inputGroupHalf}>
                 <Text style={styles.label}>Storage</Text>
-                <TextInput style={styles.input} value={storage} onChangeText={setStorage} placeholder="2TB NVMe" placeholderTextColor="#9CA3AF" />
+                <TextInput style={styles.input} value={storage} onChangeText={setStorage} placeholder="2TB NVMe" placeholderTextColor="#8A9099" />
               </View>
               <View style={styles.inputGroupHalf}>
                 <Text style={styles.label}>GPU</Text>
-                <TextInput style={styles.input} value={gpu} onChangeText={setGpu} placeholder="NVIDIA RTX 4080" placeholderTextColor="#9CA3AF" />
+                <TextInput style={styles.input} value={gpu} onChangeText={setGpu} placeholder="NVIDIA RTX 4080" placeholderTextColor="#8A9099" />
               </View>
             </View>
           </ScrollView>
@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
   card: {
     width: '100%',
     maxWidth: 520,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#17191D',
     borderRadius: 24,
     padding: 24,
     shadowColor: '#000',
@@ -114,12 +114,12 @@ const styles = StyleSheet.create({
   heading: {
     fontSize: 22,
     fontWeight: '800',
-    color: '#0F172A',
+    color: '#FFFFFF',
     marginBottom: 8,
   },
   subtext: {
     fontSize: 13,
-    color: '#475569',
+    color: '#8A9099',
     marginBottom: 16,
   },
   form: {
@@ -140,18 +140,18 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   label: {
-    color: '#64748B',
+    color: '#8A9099',
     fontSize: 12,
     marginBottom: 6,
   },
   input: {
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: '#23272C',
     borderRadius: 14,
     paddingHorizontal: 14,
     paddingVertical: 12,
-    color: '#0F172A',
-    backgroundColor: '#F8FAFC',
+    color: '#FFFFFF',
+    backgroundColor: '#14171B',
     fontSize: 14,
   },
   controls: {
@@ -167,10 +167,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   primaryButton: {
-    backgroundColor: '#6D28D9',
+    backgroundColor: '#2FB8FF',
   },
   cancelButton: {
-    backgroundColor: '#F8FAFC',
+    backgroundColor: '#14171B',
   },
   buttonText: {
     color: '#FFFFFF',
@@ -178,7 +178,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   cancelText: {
-    color: '#334155',
+    color: '#C6CBD2',
     fontWeight: '700',
     fontSize: 14,
   },
