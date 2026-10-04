@@ -72,20 +72,20 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: secondary,
+    backgroundColor: '#090909',
     borderBottomWidth: 1,
-    borderBottomColor: border,
+    borderBottomColor: '#242424',
     paddingVertical: 16,
     paddingHorizontal: 20,
     width: '100%',
-    shadowColor: '#000',
+    shadowColor: '#000000',
     shadowOffset: {
       width: 0,
       height: 1,
     },
-    shadowOpacity: 0.08,
+    shadowOpacity: 0.3,
     shadowRadius: 4,
-    elevation: 2,
+    elevation: 4,
   },
   leftSection: {
     flexDirection: 'row',
@@ -104,12 +104,12 @@ const styles = StyleSheet.create({
   appName: {
     fontSize: 18,
     fontWeight: '800',
-    color: tertiary,
+    color: '#FFFFFF',
     marginBottom: 2,
   },
   laptopName: {
     fontSize: 12,
-    color: darkLight,
+    color: '#8A9099',
     fontWeight: '500',
   },
   rightSection: {
@@ -121,7 +121,8 @@ const styles = StyleSheet.create({
     borderRadius: 22,
     overflow: 'hidden',
     borderWidth: 2,
-    borderColor: brand,
+    borderColor: '#242424',
+    backgroundColor: '#14171B',
   },
   avatar: {
     width: '100%',
@@ -131,14 +132,14 @@ const styles = StyleSheet.create({
   avatarFallback: {
     width: '100%',
     height: '100%',
-    backgroundColor: brand,
+    backgroundColor: '#FFFFFF',
     justifyContent: 'center',
     alignItems: 'center',
   },
   avatarText: {
     fontSize: 16,
     fontWeight: '700',
-    color: '#FFFFFF',
+    color: '#050505',
   },
 });
 
