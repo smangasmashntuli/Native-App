@@ -4,6 +4,7 @@ import { StatusBar } from 'expo-status-bar';
 import { MaterialCommunityIcons, FontAwesome5, Feather, Ionicons } from '@expo/vector-icons';
 import { StyledContainer, InnerContainer, PageTitle, SubTitle, Colors, StyledButton, ButtonText } from '../components/style';
 import { useDashboard } from '../context/DashboardContext';
+import { FadeInDown } from '../components/animated';
 
 const { brand, darkLight, tertiary, green, border, secondary } = Colors;
 
@@ -24,33 +25,38 @@ const Home = ({ navigation }) => {
 
   return (
     <StyledContainer>
-      <StatusBar style="dark" />
+      <StatusBar style="light" />
       <InnerContainer>
         <ScrollView style={{ width: '100%' }} contentContainerStyle={{ paddingBottom: 32 }} showsVerticalScrollIndicator={false}>
+          <FadeInDown delay={40}>
           <PageTitle>PC Doctor</PageTitle>
           <SubTitle>Live system telemetry, on-demand diagnostics, and repair guidance.</SubTitle>
+          </FadeInDown>
 
-          <View style={{ width: '100%', borderRadius: 24, overflow: 'hidden', marginBottom: 22, backgroundColor: tertiary }}>
+          <FadeInDown delay={140}>
+          <View style={{ width: '100%', borderRadius: 24, overflow: 'hidden', marginBottom: 22, backgroundColor: '#14171B', borderWidth: 1, borderColor: '#23272C' }}>
             <Image
               source={{ uri: activeDevice.image }}
               style={{ width: '100%', height: 220, resizeMode: 'cover' }}
             />
             <View style={{ position: 'absolute', left: 16, right: 16, bottom: 16 }}>
-              <Text style={{ color: secondary, fontSize: 16, fontWeight: '700', marginBottom: 4 }}>Active Hardware Unit</Text>
-              <Text style={{ color: secondary, fontSize: 22, fontWeight: '800' }}>{activeDevice.name}</Text>
-              <Text style={{ color: darkLight, fontSize: 13, marginTop: 4 }}>{activeDevice.specs}</Text>
-              <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 16, paddingTop: 12, borderTopWidth: 1, borderTopColor: secondary + '1f' }}>
+              <Text style={{ color: '#FFFFFF', fontSize: 16, fontWeight: '700', marginBottom: 4 }}>Active Hardware Unit</Text>
+              <Text style={{ color: '#FFFFFF', fontSize: 22, fontWeight: '800' }}>{activeDevice.name}</Text>
+              <Text style={{ color: '#C6CBD2', fontSize: 13, marginTop: 4 }}>{activeDevice.specs}</Text>
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 16, paddingTop: 12, borderTopWidth: 1, borderTopColor: 'rgba(255,255,255,0.12)' }}>
                 <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-                  <View style={{ width: 10, height: 10, borderRadius: 10, backgroundColor: green + '22' }} />
-                  <Text style={{ color: secondary, fontSize: 11, fontWeight: '700' }}>Telemetry Optimal</Text>
+                  <View style={{ width: 10, height: 10, borderRadius: 10, backgroundColor: '#10B98122' }} />
+                  <Text style={{ color: '#FFFFFF', fontSize: 11, fontWeight: '700' }}>Telemetry Optimal</Text>
                 </View>
-                <TouchableOpacity style={{ borderWidth: 1, borderColor: secondary + '4d', paddingVertical: 8, paddingHorizontal: 14, borderRadius: 999 }} onPress={() => navigation.navigate('Repair')}>
-                  <Text style={{ color: secondary, fontSize: 11, fontWeight: '700' }}>Launch Lab</Text>
+                <TouchableOpacity style={{ borderWidth: 1, borderColor: 'rgba(255,255,255,0.3)', paddingVertical: 8, paddingHorizontal: 14, borderRadius: 999 }} onPress={() => navigation.navigate('Repair')}>
+                  <Text style={{ color: '#FFFFFF', fontSize: 11, fontWeight: '700' }}>Launch Lab</Text>
                 </TouchableOpacity>
               </View>
             </View>
           </View>
+          </FadeInDown>
 
+          <FadeInDown delay={240}>
           <View style={{ marginBottom: 24 }}>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 12 }}>
               <Text style={{ color: tertiary, fontSize: 16, fontWeight: '700' }}>Emergency Diagnostics</Text>
@@ -79,7 +85,9 @@ const Home = ({ navigation }) => {
               ))}
             </View>
           </View>
+          </FadeInDown>
 
+          <FadeInDown delay={340}>
           <View style={{ marginBottom: 24 }}>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 12 }}>
               <Text style={{ color: tertiary, fontSize: 16, fontWeight: '700' }}>System Health</Text>
@@ -125,18 +133,21 @@ const Home = ({ navigation }) => {
               </View>
             </View>
           </View>
+          </FadeInDown>
 
-          <View style={{ backgroundColor: '#FFFFFF', borderRadius: 24, borderWidth: 1, borderColor: '#E2E8F0', padding: 18, marginBottom: 24 }}>
+          <FadeInDown delay={440}>
+          <View style={{ backgroundColor: '#17191D', borderRadius: 24, borderWidth: 1, borderColor: '#23272C', padding: 18, marginBottom: 24 }}>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 12, alignItems: 'center' }}>
               <View>
                 <Text style={{ color: tertiary, fontSize: 14, fontWeight: '700' }}>{activeDevice.gpu}</Text>
                 <Text style={{ color: darkLight, fontSize: 12, marginTop: 4 }}>Thermal throttling: None detected</Text>
               </View>
-              <View style={{ backgroundColor: '#DCFCE7', borderRadius: 999, paddingVertical: 6, paddingHorizontal: 12 }}>
-                <Text style={{ color: '#166534', fontWeight: '700', fontSize: 11 }}>{activeDevice.gpuTempC}°C</Text>
+              <View style={{ backgroundColor: 'rgba(16,185,129,0.15)', borderRadius: 999, paddingVertical: 6, paddingHorizontal: 12 }}>
+                <Text style={{ color: '#10B981', fontWeight: '700', fontSize: 11 }}>{activeDevice.gpuTempC}°C</Text>
               </View>
             </View>
           </View>
+          </FadeInDown>
 
           <StyledButton onPress={() => navigation.navigate('Repair')}>
             <ButtonText>Open Repair Lab</ButtonText>

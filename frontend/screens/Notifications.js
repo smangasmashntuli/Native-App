@@ -7,6 +7,7 @@ import { AntDesign, MaterialCommunityIcons } from '@expo/vector-icons';
 import LoadingState from '../components/LoadingState';
 import ErrorState from '../components/ErrorState';
 import EmptyState from '../components/EmptyState';
+import { FadeInDown } from '../components/animated';
 
 const { tertiary, brand, darkLight } = Colors;
 
@@ -61,22 +62,22 @@ const Notifications = () => {
 
   // Get priority color
   const getPriorityColor = (priority) => {
-    if (priority === 'high') return 'Colors.warning';
-    if (priority === 'medium') return 'Colors.warning';
-    return 'secondary';
+    if (priority === 'high') return '#FFD52C';
+    if (priority === 'medium') return '#FFD52C';
+    return '#17191D';
   };
 
   const getPriorityBorderColor = (priority) => {
-    if (priority === 'high') return 'Colors.warning';
-    if (priority === 'medium') return 'Colors.warning';
-    return 'brand';
+    if (priority === 'high') return '#FFD52C';
+    if (priority === 'medium') return '#FFD52C';
+    return '#2FB8FF';
   };
 
   // Loading state
   if (loadingNotifications && notifications.length === 0) {
     return (
       <StyledContainer>
-        <StatusBar style="dark" />
+        <StatusBar style="light" />
         <InnerContainer>
           <LoadingState message="Loading notifications..." />
         </InnerContainer>
@@ -88,7 +89,7 @@ const Notifications = () => {
   if (notificationsError && notifications.length === 0) {
     return (
       <StyledContainer>
-        <StatusBar style="dark" />
+        <StatusBar style="light" />
         <InnerContainer>
           <ErrorState
             message={notificationsError}
@@ -102,7 +103,7 @@ const Notifications = () => {
 
   return (
     <StyledContainer>
-      <StatusBar style="dark" />
+      <StatusBar style="light" />
       <InnerContainer>
         <ScrollView
           style={{ width: '100%' }}
@@ -112,18 +113,23 @@ const Notifications = () => {
             <RefreshControl refreshing={loadingNotifications} onRefresh={onRefresh} />
           }
         >
+          <FadeInDown delay={40}>
           <PageTitle>System Alerts</PageTitle>
           <SubTitle>Live hardware notifications and security advisories.</SubTitle>
+          </FadeInDown>
 
           {/* Unread Count Summary */}
           {unreadCount > 0 && (
+            <FadeInDown delay={120}>
             <View style={styles.unreadSummary}>
-              <MaterialCommunityIcons name="bell-alert" size={20} color="brand" style={{ marginRight: 8 }} />
+              <MaterialCommunityIcons name="bell-alert" size={20} color="#2FB8FF" style={{ marginRight: 8 }} />
               <Text style={styles.unreadText}>{unreadCount} unread notification{unreadCount !== 1 ? 's' : ''}</Text>
             </View>
+            </FadeInDown>
           )}
 
           {/* Filter Buttons */}
+          <FadeInDown delay={180}>
           <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: 18 }}>
             {['all', 'unread', 'high', 'medium', 'low'].map((option) => (
               <TouchableOpacity
@@ -133,33 +139,35 @@ const Notifications = () => {
                   paddingVertical: 10,
                   paddingHorizontal: 14,
                   borderRadius: 999,
-                  backgroundColor: filter === option ? 'secondary' : 'secondary',
+                  backgroundColor: filter === option ? 'rgba(47,184,255,0.16)' : '#17191D',
                   borderWidth: 1,
-                  borderColor: filter === option ? 'brand' : 'border',
+                  borderColor: filter === option ? '#2FB8FF' : '#23272C',
                 }}
               >
-                <Text style={{ fontSize: 11, fontWeight: '700', color: 'tertiary', textTransform: 'capitalize' }}>
+                <Text style={{ fontSize: 11, fontWeight: '700', color: filter === option ? '#2FB8FF' : '#8A9099', textTransform: 'capitalize' }}>
                   {option}
                 </Text>
               </TouchableOpacity>
             ))}
           </View>
+          </FadeInDown>
 
           {/* Trigger Maintenance Button */}
           <View style={{ marginBottom: 18 }}>
             <StyledButton
               onPress={handleTriggerMaintenance}
-              style={{ backgroundColor: triggering ? 'border' : 'brand' }}
+              style={{ backgroundColor: triggering ? '#23272C' : '#2FB8FF' }}
               disabled={triggering}
             >
-              <ButtonText>{triggering ? 'Generating...' : '🔔 Trigger Maintenance Alerts'}</ButtonText>
+              <MaterialCommunityIcons name="bell-outline" size={18} color="#050505" />
+              <ButtonText>{triggering ? 'Generating...' : 'Trigger Maintenance Alerts'}</ButtonText>
             </StyledButton>
           </View>
 
           {/* Notifications List */}
           {filteredNotifications.length === 0 ? (
             <EmptyState
-              icon="🔔"
+              icon="bell-outline"
               message={filter === 'all' ? 'No notifications yet. Trigger maintenance alerts to get started.' : `No ${filter} notifications.`}
             />
           ) : (
@@ -169,18 +177,18 @@ const Notifications = () => {
                 style={{
                   padding: 18,
                   borderRadius: 24,
-                  backgroundColor: '#FFFFFF',
+                  backgroundColor: '#17191D',
                   borderWidth: 1,
-                  borderColor: notif.priority === 'high' ? 'Colors.warning' : 'border',
+                  borderColor: notif.priority === 'high' ? '#FFD52C' : '#23272C',
                   marginBottom: 12,
                   borderLeftWidth: 4,
                   borderLeftColor: getPriorityBorderColor(notif.priority),
                 }}
               >
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10 }}>
-                  <Text style={{ fontSize: 14, fontWeight: '700', color: 'tertiary', flex: 1 }}>{notif.title}</Text>
+                  <Text style={{ fontSize: 14, fontWeight: '700', color: '#FFFFFF', flex: 1 }}>{notif.title}</Text>
                   {!notif.is_read && (
-                    <View style={{ width: 10, height: 10, borderRadius: 10, backgroundColor: 'brand' }} />
+                    <View style={{ width: 10, height: 10, borderRadius: 10, backgroundColor: '#2FB8FF' }} />
                   )}
                 </View>
                 <Text style={{ fontSize: 12, color: darkLight, marginBottom: 8 }}>{notif.message}</Text>
@@ -193,7 +201,7 @@ const Notifications = () => {
                       backgroundColor: getPriorityColor(notif.priority),
                       marginRight: 8,
                     }}>
-                      <Text style={{ fontSize: 10, fontWeight: '700', color: 'tertiary', textTransform: 'capitalize' }}>
+                      <Text style={{ fontSize: 10, fontWeight: '700', color: '#FFFFFF', textTransform: 'capitalize' }}>
                         {notif.priority}
                       </Text>
                     </View>
@@ -226,30 +234,30 @@ const styles = {
   unreadSummary: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'secondary',
+    backgroundColor: '#17191D',
     borderRadius: 16,
     padding: 12,
     marginBottom: 16,
     borderWidth: 1,
-    borderColor: 'border',
+    borderColor: '#23272C',
   },
   unreadText: {
     fontSize: 13,
     fontWeight: '700',
-    color: 'brand',
+    color: '#2FB8FF',
   },
   markReadButton: {
     marginTop: 10,
     paddingVertical: 8,
     paddingHorizontal: 12,
-    backgroundColor: 'secondary',
+    backgroundColor: '#17191D',
     borderRadius: 12,
     alignSelf: 'flex-start',
   },
   markReadText: {
     fontSize: 11,
     fontWeight: '700',
-    color: 'tertiary',
+    color: '#FFFFFF',
   },
 };
 

@@ -8,6 +8,7 @@ import { AntDesign, Feather, MaterialCommunityIcons } from '@expo/vector-icons';
 import api from '../api/apiService';
 import LoadingState from '../components/LoadingState';
 import ErrorState from '../components/ErrorState';
+import { FadeInDown } from '../components/animated';
 
 const { brand, tertiary, darkLight } = Colors;
 
@@ -47,7 +48,7 @@ const Profile = () => {
   if (loadingLaptop && !laptopSetup) {
     return (
       <StyledContainer>
-        <StatusBar style="dark" />
+        <StatusBar style="light" />
         <InnerContainer>
           <LoadingState message="Loading profile..." />
         </InnerContainer>
@@ -57,7 +58,7 @@ const Profile = () => {
 
   return (
     <StyledContainer>
-      <StatusBar style="dark" />
+      <StatusBar style="light" />
       <InnerContainer>
         <ScrollView
           style={{ width: '100%' }}
@@ -67,10 +68,13 @@ const Profile = () => {
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }
         >
+          <FadeInDown delay={40}>
           <PageTitle>Devices & Settings</PageTitle>
           <SubTitle>Manage profiles and diagnostic preferences.</SubTitle>
+          </FadeInDown>
 
           {/* User Account Info */}
+          <FadeInDown delay={130}>
           <View style={styles.accountCard}>
             <View style={styles.accountHeader}>
               <View style={styles.avatar}>
@@ -86,6 +90,7 @@ const Profile = () => {
               </View>
             </View>
           </View>
+          </FadeInDown>
 
           {/* Current Laptop */}
           <View style={{ marginBottom: 20 }}>
@@ -93,12 +98,15 @@ const Profile = () => {
             {laptopSetup ? (
               <View style={styles.laptopCard}>
                 <View style={styles.laptopHeader}>
-                  <Feather name="laptop" size={24} color={brand} style={{ marginRight: 12 }} />
+                  <Feather name="monitor" size={24} color={brand} style={{ marginRight: 12 }} />
                   <View style={{ flex: 1 }}>
                     <Text style={styles.laptopName}>
                       {laptopSetup.brand} {laptopSetup.model}
                     </Text>
-                    <Text style={styles.laptopStatus}>✓ Registered</Text>
+                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                      <Feather name="check-circle" size={14} color="#10B981" style={{ marginRight: 6 }} />
+                      <Text style={styles.laptopStatus}>Registered</Text>
+                    </View>
                   </View>
                 </View>
 
@@ -140,7 +148,7 @@ const Profile = () => {
               </View>
             ) : (
               <View style={styles.noLaptopCard}>
-                <Feather name="alert-circle" size={20} color="Colors.warning" style={{ marginRight: 8 }} />
+                <Feather name="alert-circle" size={20} color="#FFD52C" style={{ marginRight: 8 }} />
                 <Text style={styles.noLaptopText}>No laptop registered yet</Text>
               </View>
             )}
@@ -155,13 +163,13 @@ const Profile = () => {
                 style={[
                   styles.experienceButton,
                   {
-                    backgroundColor: experienceLevel === 'Beginner' ? brand : '#FFFFFF',
-                    borderColor: experienceLevel === 'Beginner' ? brand : 'border',
+                    backgroundColor: experienceLevel === 'Beginner' ? brand : '#17191D',
+                    borderColor: experienceLevel === 'Beginner' ? brand : '#23272C',
                   }
                 ]}
               >
                 <Text style={{
-                  color: experienceLevel === 'Beginner' ? '#FFFFFF' : 'tertiary',
+                  color: experienceLevel === 'Beginner' ? '#FFFFFF' : '#8A9099',
                   fontSize: 13,
                   fontWeight: '700',
                   textAlign: 'center'
@@ -174,13 +182,13 @@ const Profile = () => {
                 style={[
                   styles.experienceButton,
                   {
-                    backgroundColor: experienceLevel === 'Intermediate' ? brand : '#FFFFFF',
-                    borderColor: experienceLevel === 'Intermediate' ? brand : 'border',
+                    backgroundColor: experienceLevel === 'Intermediate' ? brand : '#17191D',
+                    borderColor: experienceLevel === 'Intermediate' ? brand : '#23272C',
                   }
                 ]}
               >
                 <Text style={{
-                  color: experienceLevel === 'Intermediate' ? '#FFFFFF' : 'tertiary',
+                  color: experienceLevel === 'Intermediate' ? '#FFFFFF' : '#8A9099',
                   fontSize: 13,
                   fontWeight: '700',
                   textAlign: 'center'
@@ -209,7 +217,7 @@ const Profile = () => {
 
           {/* Logout Button */}
           <View style={{ marginTop: 20, marginBottom: 12 }}>
-            <StyledButton onPress={handleLogout} style={{ backgroundColor: 'brand' }}>
+            <StyledButton onPress={handleLogout} style={{ backgroundColor: '#2FB8FF' }}>
               <ButtonText>Logout</ButtonText>
             </StyledButton>
           </View>
@@ -221,12 +229,12 @@ const Profile = () => {
 
 const styles = {
   accountCard: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#17191D',
     borderRadius: 24,
     padding: 20,
     marginBottom: 20,
     borderWidth: 1,
-    borderColor: 'border',
+    borderColor: '#23272C',
   },
   accountHeader: {
     flexDirection: 'row',
@@ -249,7 +257,7 @@ const styles = {
   userName: {
     fontSize: 16,
     fontWeight: '700',
-    color: 'tertiary',
+    color: '#FFFFFF',
     marginBottom: 4,
   },
   userEmail: {
@@ -259,15 +267,15 @@ const styles = {
   sectionTitle: {
     fontSize: 16,
     fontWeight: '700',
-    color: 'tertiary',
+    color: '#FFFFFF',
     marginBottom: 12,
   },
   laptopCard: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#17191D',
     borderRadius: 24,
     padding: 20,
     borderWidth: 1,
-    borderColor: 'border',
+    borderColor: '#23272C',
   },
   laptopHeader: {
     flexDirection: 'row',
@@ -277,19 +285,19 @@ const styles = {
   laptopName: {
     fontSize: 15,
     fontWeight: '700',
-    color: 'tertiary',
+    color: '#FFFFFF',
     marginBottom: 4,
   },
   laptopStatus: {
     fontSize: 12,
-    color: 'brand',
+    color: '#2FB8FF',
     fontWeight: '600',
   },
   specsContainer: {
     marginTop: 8,
     paddingTop: 12,
     borderTopWidth: 1,
-    borderTopColor: 'secondary',
+    borderTopColor: '#23272C',
   },
   specRow: {
     flexDirection: 'row',
@@ -303,30 +311,30 @@ const styles = {
   },
   specValue: {
     fontSize: 12,
-    color: 'tertiary',
+    color: '#FFFFFF',
     flex: 1,
   },
   noLaptopCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'Colors.warning + "33"',
+    backgroundColor: '#FFD52C33',
     borderRadius: 20,
     padding: 16,
     borderWidth: 1,
-    borderColor: 'Colors.warning',
+    borderColor: '#FFD52C',
   },
   noLaptopText: {
     fontSize: 13,
-    color: 'tertiary',
+    color: '#FFFFFF',
     fontWeight: '600',
   },
   experienceCard: {
-    backgroundColor: 'secondary',
+    backgroundColor: '#17191D',
     borderRadius: 24,
     padding: 20,
     marginBottom: 20,
     borderWidth: 1,
-    borderColor: 'secondary',
+    borderColor: '#23272C',
   },
   experienceButton: {
     flex: 1,
@@ -341,11 +349,11 @@ const styles = {
     marginTop: 12,
   },
   notificationCard: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#17191D',
     borderRadius: 24,
     padding: 20,
     borderWidth: 1,
-    borderColor: 'border',
+    borderColor: '#23272C',
   },
   notificationRow: {
     flexDirection: 'row',
@@ -353,7 +361,7 @@ const styles = {
   },
   notificationText: {
     fontSize: 13,
-    color: 'tertiary',
+    color: '#FFFFFF',
     fontWeight: '600',
   },
 };
