@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
+import { ActivityIndicator, Alert, KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { Formik } from 'formik';
-import { Octicons } from '@expo/vector-icons';
-import { View, Text, Alert, ActivityIndicator, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import * as Yup from 'yup';
 import { useAuth } from '../context/AuthContext';
@@ -10,23 +10,12 @@ import { useAuth } from '../context/AuthContext';
 import {
     StyledContainer,
     InnerContainer,
-    PageTitle,
-    PageLogo,
-    StyledFormArea,
-    SubTitle,
-    LeftIcon,
-    StyledInputLabel,
-    StyledTextInput,
-    StyledButton,
-    ButtonText,
     Colors,
-    ExtraText,
-    ExtraView,
-    TextLink,
-    TextLinkContent
 } from '../components/style';
+import { FadeInDown } from '../components/animated';
+import { success } from '../components/haptics';
 
-const { brand, darkLight, primary } = Colors;
+const { darkLight, brand, warning } = Colors;
 
 const SignupSchema = Yup.object().shape({
     name: Yup.string().required('Name is required'),
@@ -36,19 +25,25 @@ const SignupSchema = Yup.object().shape({
     confirmPassword: Yup.string().oneOf([Yup.ref('password'), null], 'Passwords must match').required('Confirm Password is required'),
 });
 
-const MyTextInput = ({ label, icon, ...props}) => {
+const AuthField = ({ label, icon, error, ...props }) => {
     return (
-        <View style={{ marginBottom: 18 }}>
-            <StyledInputLabel>{label}</StyledInputLabel>
-            <View style={{ position: 'relative' }}>
-                <LeftIcon>
-                    <Octicons name={icon} size={24} color={brand} />
-                </LeftIcon>
-                <StyledTextInput {...props} />
+        <View style={styles.fieldGroup}>
+            <Text style={styles.label}>{label}</Text>
+            <View style={[styles.inputShell, error && styles.inputShellError]}>
+                <MaterialCommunityIcons name={icon} size={17} color={darkLight} />
+                <TextInput {...props} style={styles.input} placeholderTextColor="#70747C" />
             </View>
+            {error && <Text style={styles.fieldError}>{error}</Text>}
         </View>
     );
 };
+
+const ProviderButton = ({ icon, label, onPress }) => (
+    <Pressable style={styles.providerButton} onPress={onPress}>
+        <MaterialCommunityIcons name={icon} size={17} color="#FFFFFF" />
+        <Text style={styles.providerText}>{label}</Text>
+    </Pressable>
+);
 
 const SignUp = () => {
     const navigation = useNavigation();
@@ -67,6 +62,7 @@ const SignUp = () => {
 
             const result = await signup(userData);
             if (result.success) {
+                success();
                 Alert.alert('Success', 'Account created successfully! Please log in.', [
                     {
                         text: 'Go to Login',
@@ -84,104 +80,83 @@ const SignUp = () => {
     };
 
     return (
-        <StyledContainer>
-            <StatusBar style="dark" />
-            <KeyboardAvoidingView
-                style={{ flex: 1, width: '100%' }}
-                behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-            >
-                <ScrollView
-                    contentContainerStyle={{ flexGrow: 1, paddingBottom: 32 }}
-                    keyboardShouldPersistTaps="handled"
-                    showsVerticalScrollIndicator={false}
-                >
-                    <InnerContainer>
-                        <View style={{ width: '100%', backgroundColor: '#FFFFFF', borderRadius: 30, padding: 26, shadowColor: 'tertiary', shadowOpacity: 0.08, shadowOffset: { width: 0, height: 10 }, shadowRadius: 24, elevation: 6 }}>
-                    <PageLogo resizeMode="cover" source={require('../image/logo.png')} />
-                    <PageTitle>Create Account</PageTitle>
-                    <SubTitle>Get started with your PC Doctor profile.</SubTitle>
+        <StyledContainer style={styles.container}>
+            <StatusBar style="light" />
+            <KeyboardAvoidingView style={styles.keyboard} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+                <ScrollView contentContainerStyle={styles.scrollContent} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
+                    <InnerContainer style={styles.inner}>
+                        <Pressable style={styles.backButton} onPress={() => navigation.goBack()}>
+                            <MaterialCommunityIcons name="arrow-left" size={19} color="#FFFFFF" />
+                        </Pressable>
 
-                    <Formik initialValues={{ name: '', surname: '', email: '', password: '', confirmPassword: '' }} validationSchema={SignupSchema} onSubmit={handleSignUp}>
-                        {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
-                            <StyledFormArea>
-                                <MyTextInput
-                                    label="Name"
-                                    icon="person"
-                                    placeholder="Your first name"
-                                    onChangeText={handleChange('name')}
-                                    onBlur={handleBlur('name')}
-                                    value={values.name}
-                                />
-                                {touched.name && errors.name && <Text style={{ color: 'Colors.warning', fontSize: 12, marginBottom: 10 }}>{errors.name}</Text>}
+                        <FadeInDown delay={60} duration={500} style={styles.content}>
+                            <Text style={styles.title}>Create your account</Text>
+                            <Text style={styles.subtitle}>Start understanding your laptop better.</Text>
 
-                                <MyTextInput
-                                    label="Surname"
-                                    icon="person"
-                                    placeholder="Your last name"
-                                    onChangeText={handleChange('surname')}
-                                    onBlur={handleBlur('surname')}
-                                    value={values.surname}
-                                />
-                                {touched.surname && errors.surname && <Text style={{ color: 'Colors.warning', fontSize: 12, marginBottom: 10 }}>{errors.surname}</Text>}
+                            <Formik initialValues={{ name: '', surname: '', email: '', password: '', confirmPassword: '' }} validationSchema={SignupSchema} onSubmit={handleSignUp}>
+                                {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
+                                    <View style={styles.form}>
+                                        <AuthField label="First name" icon="account-outline" placeholder="Your first name" value={values.name} onChangeText={handleChange('name')} onBlur={handleBlur('name')} error={touched.name && errors.name} />
+                                        <AuthField label="Last name" icon="account-outline" placeholder="Your last name" value={values.surname} onChangeText={handleChange('surname')} onBlur={handleBlur('surname')} error={touched.surname && errors.surname} />
+                                        <AuthField label="Email" icon="email-outline" placeholder="hello@company.com" keyboardType="email-address" autoCapitalize="none" autoCorrect={false} value={values.email} onChangeText={handleChange('email')} onBlur={handleBlur('email')} error={touched.email && errors.email} />
+                                        <AuthField label="Password" icon="lock-outline" placeholder="Create a password" secureTextEntry value={values.password} onChangeText={handleChange('password')} onBlur={handleBlur('password')} error={touched.password && errors.password} />
+                                        <AuthField label="Confirm password" icon="lock-check-outline" placeholder="Repeat your password" secureTextEntry value={values.confirmPassword} onChangeText={handleChange('confirmPassword')} onBlur={handleBlur('confirmPassword')} error={touched.confirmPassword && errors.confirmPassword} />
 
-                                <MyTextInput
-                                    label="Email Address"
-                                    icon="mail"
-                                    placeholder="you@example.com"
-                                    placeholderTextColor={darkLight}
-                                    onChangeText={handleChange('email')}
-                                    onBlur={handleBlur('email')}
-                                    value={values.email}
-                                />
-                                {touched.email && errors.email && <Text style={{ color: 'Colors.warning', fontSize: 12, marginBottom: 10 }}>{errors.email}</Text>}
+                                        <Pressable style={[styles.primaryButton, isLoading && styles.disabledButton]} onPress={handleSubmit} disabled={isLoading}>
+                                            {isLoading ? <ActivityIndicator color="#050505" /> : <Text style={styles.primaryButtonText}>Create account</Text>}
+                                        </Pressable>
+                                    </View>
+                                )}
+                            </Formik>
 
-                                <MyTextInput
-                                    label="Password"
-                                    icon="lock"
-                                    placeholder="Create a password"
-                                    placeholderTextColor={darkLight}
-                                    onChangeText={handleChange('password')}
-                                    onBlur={handleBlur('password')}
-                                    value={values.password}
-                                    secureTextEntry
-                                />
-                                {touched.password && errors.password && <Text style={{ color: 'Colors.warning', fontSize: 12, marginBottom: 10 }}>{errors.password}</Text>}
+                            <View style={styles.dividerRow}>
+                                <View style={styles.divider} />
+                                <Text style={styles.dividerText}>OR</Text>
+                                <View style={styles.divider} />
+                            </View>
 
-                                <MyTextInput
-                                    label="Confirm Password"
-                                    icon="lock"
-                                    placeholder="Repeat your password"
-                                    placeholderTextColor={darkLight}
-                                    onChangeText={handleChange('confirmPassword')}
-                                    onBlur={handleBlur('confirmPassword')}
-                                    value={values.confirmPassword}
-                                    secureTextEntry
-                                />
-                                {touched.confirmPassword && errors.confirmPassword && <Text style={{ color: 'Colors.warning', fontSize: 12, marginBottom: 10 }}>{errors.confirmPassword}</Text>}
+                            <ProviderButton icon="apple" label="Continue with Apple" onPress={() => Alert.alert('Unavailable', 'Apple sign-in is not configured yet.')} />
+                            <ProviderButton icon="google" label="Continue with Google" onPress={() => Alert.alert('Unavailable', 'Google sign-in is not configured yet.')} />
 
-                                <StyledButton onPress={handleSubmit} disabled={isLoading} style={{ backgroundColor: brand }}>
-                                    {isLoading ? (
-                                        <ActivityIndicator size="small" color={primary} />
-                                    ) : (
-                                        <ButtonText>Create Account</ButtonText>
-                                    )}
-                                </StyledButton>
-
-                                <ExtraView>
-                                    <ExtraText>Already registered? </ExtraText>
-                                    <TextLink onPress={() => navigation.navigate('Login')}>
-                                        <TextLinkContent>Sign in</TextLinkContent>
-                                    </TextLink>
-                                </ExtraView>
-                            </StyledFormArea>
-                        )}
-                    </Formik>
-                        </View>
+                            <View style={styles.accountRow}>
+                                <Text style={styles.accountText}>Already registered?</Text>
+                                <Pressable onPress={() => navigation.navigate('Login')}><Text style={styles.accountLink}> Sign in</Text></Pressable>
+                            </View>
+                        </FadeInDown>
                     </InnerContainer>
                 </ScrollView>
             </KeyboardAvoidingView>
         </StyledContainer>
     );
 };
+
+const styles = StyleSheet.create({
+    container: { paddingHorizontal: 8, backgroundColor: '#050505' },
+    keyboard: { flex: 1, width: '100%' },
+    scrollContent: { flexGrow: 1, paddingHorizontal: 8, paddingBottom: 18 },
+    inner: { alignItems: 'stretch' },
+    backButton: { width: 32, height: 32, borderRadius: 16, backgroundColor: '#1A1A1A', alignItems: 'center', justifyContent: 'center', marginBottom: 24 },
+    content: { width: '100%' },
+    title: { color: '#FFFFFF', fontSize: 27, fontWeight: '600', marginBottom: 12 },
+    subtitle: { color: darkLight, fontSize: 14, marginBottom: 22 },
+    form: { width: '100%' },
+    fieldGroup: { marginBottom: 12 },
+    label: { color: '#FFFFFF', fontSize: 11, marginBottom: 7 },
+    inputShell: { height: 42, flexDirection: 'row', alignItems: 'center', gap: 9, paddingHorizontal: 12, borderRadius: 6, borderWidth: 1, borderColor: '#242424', backgroundColor: '#090909' },
+    inputShellError: { borderColor: '#A86A6A' },
+    input: { flex: 1, color: '#FFFFFF', fontSize: 12, paddingVertical: 0 },
+    fieldError: { color: '#E58C8C', fontSize: 10, marginTop: 5 },
+    primaryButton: { height: 43, borderRadius: 5, backgroundColor: '#FFFFFF', alignItems: 'center', justifyContent: 'center', marginTop: 4 },
+    disabledButton: { opacity: 0.65 },
+    primaryButtonText: { color: '#050505', fontSize: 12, fontWeight: '600' },
+    dividerRow: { flexDirection: 'row', alignItems: 'center', gap: 10, marginVertical: 18 },
+    divider: { flex: 1, height: 1, backgroundColor: '#242424' },
+    dividerText: { color: '#70747C', fontSize: 10 },
+    providerButton: { height: 40, borderRadius: 4, borderWidth: 1, borderColor: '#242424', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 10, marginBottom: 9 },
+    providerText: { color: '#FFFFFF', fontSize: 11 },
+    accountRow: { flexDirection: 'row', justifyContent: 'center', marginTop: 16 },
+    accountText: { color: darkLight, fontSize: 12 },
+    accountLink: { color: '#FFFFFF', fontSize: 12, fontWeight: '600' },
+});
 
 export default SignUp;

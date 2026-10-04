@@ -20,8 +20,10 @@ import {
     ButtonText,
     Colors,
 } from '../components/style';
+import { FadeInDown } from '../components/animated';
+import { success } from '../components/haptics';
 
-const { brand, darkLight, primary } = Colors;
+const { brand, darkLight, primary, warning } = Colors;
 
 const SetupSchema = Yup.object().shape({
     brand: Yup.string().required('Brand is required'),
@@ -56,6 +58,7 @@ const SetUp = () => {
             });
 
             if (result.success) {
+                success();
                 Alert.alert('Success', 'Laptop registered successfully!', [
                     {
                         text: 'OK',
@@ -74,9 +77,10 @@ const SetUp = () => {
 
     return (
         <StyledContainer>
-            <StatusBar style="dark" />
+            <StatusBar style="light" />
             <InnerContainer>
-                <View style={{ width: '100%', backgroundColor: '#FFFFFF', borderRadius: 30, padding: 26, shadowColor: 'tertiary', shadowOpacity: 0.08, shadowOffset: { width: 0, height: 10 }, shadowRadius: 24, elevation: 6 }}>
+                <FadeInDown delay={80} duration={600}>
+                <View style={{ width: '100%', backgroundColor: '#17191D', borderRadius: 30, padding: 26, borderWidth: 1, borderColor: '#23272C', shadowColor: '#000000', shadowOpacity: 0.4, shadowOffset: { width: 0, height: 10 }, shadowRadius: 24, elevation: 8 }}>
                     <PageTitle>Device Setup</PageTitle>
                     <SubTitle>Connect your system to PC Doctor AI.</SubTitle>
 
@@ -92,7 +96,7 @@ const SetUp = () => {
                                     onBlur={handleBlur('brand')}
                                     value={values.brand}
                                 />
-                                {touched.brand && errors.brand && <Text style={{ color: 'Colors.warning', fontSize: 12, marginBottom: 10 }}>{errors.brand}</Text>}
+                                {touched.brand && errors.brand && <Text style={{ color: warning, fontSize: 12, marginBottom: 10 }}>{errors.brand}</Text>}
 
                                 <MyTextInput
                                     label="Model"
@@ -103,7 +107,7 @@ const SetUp = () => {
                                     onBlur={handleBlur('model')}
                                     value={values.model}
                                 />
-                                {touched.model && errors.model && <Text style={{ color: 'Colors.warning', fontSize: 12, marginBottom: 10 }}>{errors.model}</Text>}
+                                {touched.model && errors.model && <Text style={{ color: warning, fontSize: 12, marginBottom: 10 }}>{errors.model}</Text>}
 
                                 <StyledButton onPress={handleSubmit} disabled={isLoading} style={{ backgroundColor: brand }}>
                                     {isLoading ? (
@@ -116,6 +120,7 @@ const SetUp = () => {
                         )}
                     </Formik>
                 </View>
+                </FadeInDown>
             </InnerContainer>
         </StyledContainer>
     );
