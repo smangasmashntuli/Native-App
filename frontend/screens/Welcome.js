@@ -16,6 +16,7 @@ import {
 import LoadingState from '../components/LoadingState';
 import ErrorState from '../components/ErrorState';
 import EmptyState from '../components/EmptyState';
+import { FadeInDown } from '../components/animated';
 
 const { brand, darkLight, tertiary } = Colors;
 
@@ -59,7 +60,7 @@ const Welcome = () => {
   if (loadingLaptop && !activeDevice) {
     return (
       <StyledContainer>
-        <StatusBar style="dark" />
+        <StatusBar style="light" />
         <InnerContainer>
           <LoadingState message="Loading your laptop information..." />
         </InnerContainer>
@@ -71,7 +72,7 @@ const Welcome = () => {
   if (laptopError && !activeDevice) {
     return (
       <StyledContainer>
-        <StatusBar style="dark" />
+        <StatusBar style="light" />
         <InnerContainer>
           <ErrorState
             message={laptopError}
@@ -87,7 +88,7 @@ const Welcome = () => {
   if (!activeDevice) {
   return (
     <StyledContainer>
-      <StatusBar style="dark" />
+      <StatusBar style="light" />
       <InnerContainer>
         <ScrollView
           style={{ width: '100%' }}
@@ -101,7 +102,7 @@ const Welcome = () => {
             <SubTitle>Monitor your device, prioritize alerts, and start diagnostics.</SubTitle>
           </View>
             <EmptyState
-              icon="💻"
+              icon="laptop"
               message="No laptop registered yet. Set up your device to get started."
               actionText="Set Up Laptop"
               onAction={() => navigation.navigate('SetUp')}
@@ -134,16 +135,19 @@ const Welcome = () => {
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }
         >
+          <FadeInDown delay={40}>
           <View style={{ marginBottom: 28 }}>
             <PageTitle>PC Doctor Dashboard</PageTitle>
             <SubTitle>Monitor your device, prioritize alerts, and start diagnostics.</SubTitle>
           </View>
+          </FadeInDown>
 
           {/* Active Device Card */}
-          <View style={{ backgroundColor: 'secondary', borderRadius: 28, padding: 24, marginBottom: 20, borderWidth: 1, borderColor: 'border' }}>
-            <Text style={{ color: 'brand', fontSize: 16, fontWeight: '700', marginBottom: 12 }}>Active Device</Text>
+          <FadeInDown delay={140}>
+          <View style={{ backgroundColor: '#17191D', borderRadius: 28, padding: 24, marginBottom: 20, borderWidth: 1, borderColor: '#23272C' }}>
+            <Text style={{ color: brand, fontSize: 16, fontWeight: '700', marginBottom: 12 }}>Active Device</Text>
             <Text style={{ color: darkLight, fontSize: 13, marginBottom: 16 }}>{activeDevice.specs}</Text>
-            <Text style={{ color: 'tertiary', fontSize: 24, fontWeight: '800', marginBottom: 18 }}>{activeDevice.name}</Text>
+            <Text style={{ color: '#FFFFFF', fontSize: 24, fontWeight: '800', marginBottom: 18 }}>{activeDevice.name}</Text>
 
             {/* Laptop Image */}
             {activeDevice.image ? (
@@ -158,7 +162,7 @@ const Welcome = () => {
                 <LoadingState message="Fetching laptop image..." size="small" />
               </View>
             ) : (
-              <View style={{ marginBottom: 16, padding: 16, backgroundColor: 'secondary', borderRadius: 12, alignItems: 'center' }}>
+              <View style={{ marginBottom: 16, padding: 16, backgroundColor: '#17191D', borderRadius: 12, alignItems: 'center' }}>
                 <Text style={{ color: darkLight, fontSize: 12, marginBottom: 8 }}>No image available</Text>
                 <TouchableOpacity onPress={handleTriggerIngestion}>
                   <Text style={{ color: brand, fontSize: 12, fontWeight: '700' }}>Fetch Specs & Image</Text>
@@ -169,16 +173,16 @@ const Welcome = () => {
             {/* Spec Cards */}
             <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' }}>
               {specCards.map((card) => (
-                <View key={card.key} style={{ width: '48%', backgroundColor: '#FFFFFF', borderRadius: 20, padding: 16, marginBottom: 12, borderWidth: 1, borderColor: 'secondary' }}>
+                <View key={card.key} style={{ width: '48%', backgroundColor: '#17191D', borderRadius: 20, padding: 16, marginBottom: 12, borderWidth: 1, borderColor: '#23272C' }}>
                   <Text style={{ fontSize: 12, color: darkLight, marginBottom: 8 }}>{card.label}</Text>
-                  <Text style={{ fontSize: 14, fontWeight: '700', color: 'tertiary' }}>{card.value}</Text>
+                  <Text style={{ fontSize: 14, fontWeight: '700', color: '#FFFFFF' }}>{card.value}</Text>
                 </View>
               ))}
             </View>
 
             {/* Additional Specs */}
             {(laptopSpecs?.display || laptopSpecs?.os) && (
-              <View style={{ marginTop: 8, padding: 12, backgroundColor: '#FFFFFF', borderRadius: 16 }}>
+              <View style={{ marginTop: 8, padding: 12, backgroundColor: '#17191D', borderRadius: 16 }}>
                 {laptopSpecs?.display && (
                   <Text style={{ fontSize: 12, color: darkLight, marginBottom: 4 }}>
                     Display: {laptopSpecs.display}
@@ -194,21 +198,23 @@ const Welcome = () => {
 
             {/* Known Issues */}
             {laptopSpecs?.known_issues && laptopSpecs.known_issues.length > 0 && (
-              <View style={{ marginTop: 12, padding: 12, backgroundColor: 'Colors.warning + "33"', borderRadius: 16, borderWidth: 1, borderColor: 'Colors.warning' }}>
-                <Text style={{ fontSize: 12, fontWeight: '700', color: 'tertiary', marginBottom: 6 }}>Known Issues:</Text>
+              <View style={{ marginTop: 12, padding: 12, backgroundColor: '#FFD52C33', borderRadius: 16, borderWidth: 1, borderColor: '#FFD52C' }}>
+                <Text style={{ fontSize: 12, fontWeight: '700', color: '#FFFFFF', marginBottom: 6 }}>Known Issues:</Text>
                 {laptopSpecs.known_issues.slice(0, 3).map((issue, idx) => (
-                  <Text key={idx} style={{ fontSize: 11, color: 'tertiary', marginBottom: 2 }}>• {issue}</Text>
+                  <Text key={idx} style={{ fontSize: 11, color: '#FFFFFF', marginBottom: 2 }}>• {issue}</Text>
                 ))}
               </View>
             )}
           </View>
+          </FadeInDown>
 
           {/* Latest Alert */}
-          <View style={{ backgroundColor: 'secondary', borderRadius: 24, padding: 20, marginBottom: 20, borderWidth: 1, borderColor: 'border' }}>
-            <Text style={{ fontSize: 15, fontWeight: '700', color: 'brand', marginBottom: 8 }}>Latest Alert</Text>
+          <FadeInDown delay={240}>
+          <View style={{ backgroundColor: '#17191D', borderRadius: 24, padding: 20, marginBottom: 20, borderWidth: 1, borderColor: '#23272C' }}>
+            <Text style={{ fontSize: 15, fontWeight: '700', color: brand, marginBottom: 8 }}>Latest Alert</Text>
             {latestAlert ? (
               <>
-                <Text style={{ fontSize: 14, color: 'tertiary', fontWeight: '700' }}>{latestAlert.title}</Text>
+                <Text style={{ fontSize: 14, color: '#FFFFFF', fontWeight: '700' }}>{latestAlert.title}</Text>
                 <Text style={{ color: darkLight, marginTop: 6 }}>{latestAlert.message}</Text>
                 <Text style={{ color: darkLight, marginTop: 8, fontSize: 12 }}>
                   {latestAlert.priority} • {new Date(latestAlert.created_at).toLocaleDateString()}
@@ -218,8 +224,10 @@ const Welcome = () => {
               <Text style={{ color: darkLight }}>No outstanding alerts. Your systems are stable.</Text>
             )}
           </View>
+          </FadeInDown>
 
           {/* Quick Actions */}
+          <FadeInDown delay={340}>
           <View style={{ marginBottom: 20, flexDirection: 'row', justifyContent: 'space-between', flexWrap: 'wrap' }}>
             <StyledButton onPress={() => navigation.navigate('Chat')} style={{ flexBasis: '48%', marginBottom: 12 }}>
               <ButtonText>Chat with AI</ButtonText>
@@ -234,6 +242,7 @@ const Welcome = () => {
               <ButtonText>Quick Diagnose</ButtonText>
             </StyledButton>
           </View>
+          </FadeInDown>
 
         </ScrollView>
       </InnerContainer>
