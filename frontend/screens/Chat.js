@@ -99,7 +99,7 @@ const Chat = () => {
 
   return (
     <StyledContainer>
-      <StatusBar style="dark" />
+      <StatusBar style="light" />
       <InnerContainer>
         <FadeInDown delay={40}>
         <PageTitle>AI Troubleshooting</PageTitle>
