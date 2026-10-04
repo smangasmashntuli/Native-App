@@ -51,7 +51,7 @@ const ComponentInfoModal = ({ visible, componentName, explanation, loading, onCl
 
                 {/* Safety Warning */}
                 <View style={styles.safetyWarning}>
-                  <AntDesign name="exclamationcircle" size={16} color="#991B1B" style={{ marginRight: 8 }} />
+                  <AntDesign name="exclamationcircle" size={16} color="#FF9B9B" style={{ marginRight: 8 }} />
                   <Text style={styles.safetyText}>
                     Always disconnect the battery before touching internal components.
                   </Text>
@@ -83,7 +83,7 @@ const styles = {
     justifyContent: 'flex-end',
   },
   modalContainer: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#090909',
     borderTopLeftRadius: 28,
     borderTopRightRadius: 28,
     maxHeight: '70%',
@@ -103,14 +103,14 @@ const styles = {
   title: {
     fontSize: 18,
     fontWeight: '800',
-    color: '#0F172A',
+    color: '#FFFFFF',
   },
   closeButton: {
     padding: 8,
   },
   divider: {
     height: 1,
-    backgroundColor: '#E2E8F0',
+    backgroundColor: '#242424',
     marginHorizontal: 20,
   },
   content: {
@@ -128,24 +128,24 @@ const styles = {
   },
   explanationText: {
     fontSize: 14,
-    color: '#0F172A',
+    color: '#FFFFFF',
     lineHeight: 22,
     marginBottom: 16,
   },
   safetyWarning: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    backgroundColor: '#FEE2E2',
+    backgroundColor: '#2B1416',
     borderRadius: 12,
     padding: 12,
     borderWidth: 1,
-    borderColor: '#FECACA',
+    borderColor: 'rgba(239,68,68,0.35)',
     marginTop: 8,
   },
   safetyText: {
     flex: 1,
     fontSize: 12,
-    color: '#991B1B',
+    color: '#FF9B9B',
     lineHeight: 18,
   },
   errorContainer: {
