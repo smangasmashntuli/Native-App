@@ -288,7 +288,7 @@ const styles = StyleSheet.create({
     },
     sheet: {
         minHeight: 260,
-        backgroundColor: '#FFFFFF',
+        backgroundColor: '#17191D',
         borderTopLeftRadius: 28,
         borderTopRightRadius: 28,
         paddingHorizontal: 20,
@@ -300,13 +300,13 @@ const styles = StyleSheet.create({
         width: 54,
         height: 5,
         borderRadius: 999,
-        backgroundColor: '#CBD5E1',
+        backgroundColor: '#2B2F34',
         marginBottom: 14,
     },
     sheetTitle: {
         fontSize: 20,
         fontWeight: '800',
-        color: '#0F172A',
+        color: '#FFFFFF',
         marginBottom: 10,
     },
     sheetBody: {
@@ -316,7 +316,7 @@ const styles = StyleSheet.create({
         paddingBottom: 12,
     },
     sheetText: {
-        color: '#334155',
+        color: '#C6CBD2',
         fontSize: 15,
         lineHeight: 22,
     },

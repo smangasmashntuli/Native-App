@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text } from 'react-native';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Colors, StyledButton, ButtonText } from './style';
 
 const { brand, darkLight, tertiary } = Colors;
@@ -10,20 +11,20 @@ const { brand, darkLight, tertiary } = Colors;
  * @param {string} message - Empty state message to display
  * @param {string} actionText - Text for action button (optional)
  * @param {function} onAction - Action callback function (optional)
- * @param {string} icon - Emoji icon to display (optional)
+ * @param {string} icon - MaterialCommunityIcons name to display (optional)
  * @param {object} style - Additional styles for container
  */
 const EmptyState = ({ 
   message = 'No data available', 
   actionText, 
   onAction, 
-  icon = '📭',
+  icon = 'inbox-outline',
   style 
 }) => {
   return (
     <View style={[styles.container, style]}>
       <View style={styles.iconContainer}>
-        <Text style={styles.icon}>{icon}</Text>
+        <MaterialCommunityIcons name={icon} size={40} color={brand} />
       </View>
       <Text style={styles.message}>{message}</Text>
       {onAction && actionText && (
@@ -41,12 +42,21 @@ const styles = {
     justifyContent: 'center',
     alignItems: 'center',
     padding: 24,
+    backgroundColor: '#0E0F11',
   },
   iconContainer: {
     marginBottom: 16,
+    width: 84,
+    height: 84,
+    borderRadius: 42,
+    backgroundColor: '#17191D',
+    borderWidth: 1,
+    borderColor: '#23272C',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   icon: {
-    fontSize: 48,
+    fontSize: 40,
   },
   message: {
     fontSize: 14,
@@ -58,6 +68,7 @@ const styles = {
   actionButton: {
     backgroundColor: brand,
     minWidth: 140,
+    borderRadius: 40,
   },
 };
 

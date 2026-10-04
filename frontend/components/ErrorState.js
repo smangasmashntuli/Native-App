@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
+import { AntDesign } from '@expo/vector-icons';
 import { Colors, StyledButton, ButtonText } from './style';
 
 const { brand, darkLight, tertiary } = Colors;
@@ -16,7 +17,7 @@ const ErrorState = ({ message = 'Something went wrong', onRetry, retryText = 'Tr
   return (
     <View style={[styles.container, style]}>
       <View style={styles.iconContainer}>
-        <Text style={styles.icon}>⚠️</Text>
+        <AntDesign name="exclamationcircle" size={40} color={brand} />
       </View>
       <Text style={styles.message}>{message}</Text>
       {onRetry && (
@@ -34,12 +35,21 @@ const styles = {
     justifyContent: 'center',
     alignItems: 'center',
     padding: 24,
+    backgroundColor: '#0E0F11',
   },
   iconContainer: {
     marginBottom: 16,
+    width: 84,
+    height: 84,
+    borderRadius: 42,
+    backgroundColor: '#17191D',
+    borderWidth: 1,
+    borderColor: '#23272C',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   icon: {
-    fontSize: 48,
+    fontSize: 40,
   },
   message: {
     fontSize: 14,
@@ -51,6 +61,7 @@ const styles = {
   retryButton: {
     backgroundColor: brand,
     minWidth: 140,
+    borderRadius: 40,
   },
 };
 
