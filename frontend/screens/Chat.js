@@ -7,6 +7,7 @@ import { AntDesign, Feather, MaterialCommunityIcons } from '@expo/vector-icons';
 import api from '../api/apiService';
 import LoadingState from '../components/LoadingState';
 import ErrorState from '../components/ErrorState';
+import { FadeInDown } from '../components/animated';
 
 const { brand, darkLight, tertiary, secondary, border, warning } = Colors;
 
@@ -100,13 +101,15 @@ const Chat = () => {
     <StyledContainer>
       <StatusBar style="dark" />
       <InnerContainer>
+        <FadeInDown delay={40}>
         <PageTitle>AI Troubleshooting</PageTitle>
         <SubTitle>Ask PC Doctor any hardware or performance question.</SubTitle>
+        </FadeInDown>
 
         {/* Device Context Banner */}
         {activeDevice && (
           <View style={styles.deviceBanner}>
-            <Feather name="laptop" size={16} color={brand} style={{ marginRight: 8 }} />
+            <Feather name="monitor" size={16} color={brand} style={{ marginRight: 8 }} />
             <Text style={styles.deviceText}>{deviceContext}</Text>
           </View>
         )}
@@ -118,7 +121,10 @@ const Chat = () => {
               <AntDesign name="exclamationcircle" size={18} color={tertiary} />
             </View>
             <View style={styles.bannerTextContainer}>
-              <Text style={styles.bannerTitle}>⚠️ Safety Warning Active</Text>
+              <View style={styles.bannerTitleRow}>
+                <AntDesign name="exclamationcircle" size={14} color={tertiary} />
+                <Text style={styles.bannerTitle}>Safety Warning Active</Text>
+              </View>
               <Text style={styles.bannerText}>The AI has detected a high-risk issue. Please follow safety instructions carefully.</Text>
             </View>
             <Pressable onPress={() => setShowSafetyBanner(false)}>
@@ -146,7 +152,8 @@ const Chat = () => {
         {/* Error State */}
         {error && (
           <View style={styles.errorBanner}>
-            <Text style={styles.errorText}>⚠️ {error}</Text>
+            <AntDesign name="exclamationcircle" size={16} color={tertiary} />
+            <Text style={styles.errorText}>{error}</Text>
           </View>
         )}
 
@@ -175,7 +182,10 @@ const Chat = () => {
                   {/* High Risk Warning */}
                   {item.isHighRisk && item.warningData && (
                     <View style={styles.warningCard}>
-                      <Text style={styles.warningTitle}>🚨 {item.warningData.warning_title || 'High Risk Detected'}</Text>
+                      <View style={styles.warningTitleRow}>
+                        <AntDesign name="exclamationcircle" size={14} color={tertiary} />
+                        <Text style={styles.warningTitle}>{item.warningData.warning_title || 'High Risk Detected'}</Text>
+                      </View>
                       {item.warningData.action_recommendation && (
                         <Text style={styles.warningText}>{item.warningData.action_recommendation}</Text>
                       )}
@@ -190,6 +200,12 @@ const Chat = () => {
               )}
               showsVerticalScrollIndicator={false}
             />
+          )}
+          {loading && (
+            <View style={styles.thinkingIndicator}>
+              <ActivityIndicator size="small" color={brand} />
+              <Text style={styles.thinkingText}>PC Doctor is thinking...</Text>
+            </View>
           )}
         </View>
 
@@ -269,6 +285,12 @@ const styles = StyleSheet.create({
     color: tertiary,
     marginBottom: 4,
   },
+  bannerTitleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    marginBottom: 4,
+  },
   bannerText: {
     fontSize: 12,
     color: tertiary,
@@ -285,10 +307,14 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     borderWidth: 1,
     borderColor: Colors.warning,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
   },
   errorText: {
     fontSize: 12,
     color: tertiary,
+    flex: 1,
   },
   messagesContainer: {
     flex: 1,
@@ -318,24 +344,27 @@ const styles = StyleSheet.create({
     padding: 14,
     borderRadius: 18,
     maxWidth: '85%',
+    borderWidth: 1,
   },
   userBubble: {
     alignSelf: 'flex-end',
-    backgroundColor: secondary,
+    backgroundColor: 'rgba(47,184,255,0.16)',
+    borderColor: '#2FB8FF',
   },
   aiBubble: {
     alignSelf: 'flex-start',
-    backgroundColor: secondary,
+    backgroundColor: '#17191D',
+    borderColor: '#23272C',
   },
   messageText: {
     fontSize: 14,
     lineHeight: 20,
   },
   userText: {
-    color: brand,
+    color: '#FFFFFF',
   },
   aiText: {
-    color: tertiary,
+    color: '#C6CBD2',
   },
   warningCard: {
     marginTop: 12,
@@ -351,6 +380,11 @@ const styles = StyleSheet.create({
     color: tertiary,
     marginBottom: 6,
   },
+  warningTitleRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: 6,
+  },
   warningText: {
     fontSize: 12,
     color: tertiary,
@@ -361,6 +395,18 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: tertiary,
     fontWeight: '700',
+  },
+  thinkingIndicator: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    alignSelf: 'flex-start',
+    gap: 8,
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+  },
+  thinkingText: {
+    color: darkLight,
+    fontSize: 12,
   },
   quickChips: {
     width: '100%',
@@ -396,7 +442,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 12,
     color: tertiary,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#17191D',
     fontSize: 14,
   },
   sendButton: {

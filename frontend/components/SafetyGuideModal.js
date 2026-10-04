@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
   card: {
     width: '100%',
     maxWidth: 520,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#17191D',
     borderRadius: 24,
     padding: 24,
     maxHeight: '85%',
@@ -64,12 +64,12 @@ const styles = StyleSheet.create({
   heading: {
     fontSize: 22,
     fontWeight: '800',
-    color: '#0F172A',
+    color: '#FFFFFF',
     marginBottom: 8,
   },
   subtext: {
     fontSize: 13,
-    color: '#475569',
+    color: '#8A9099',
     marginBottom: 18,
   },
   section: {
@@ -77,19 +77,19 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontWeight: '700',
-    color: '#1E293B',
+    color: '#FFFFFF',
     marginBottom: 6,
     fontSize: 14,
   },
   sectionText: {
-    color: '#475569',
+    color: '#8A9099',
     lineHeight: 20,
     fontSize: 13,
   },
   closeButton: {
     marginTop: 10,
     alignSelf: 'center',
-    backgroundColor: '#6D28D9',
+    backgroundColor: '#2FB8FF',
     borderRadius: 16,
     paddingHorizontal: 32,
     paddingVertical: 14,
