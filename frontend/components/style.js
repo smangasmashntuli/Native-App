@@ -1,30 +1,56 @@
 // style.js
 import styled from 'styled-components/native';
 import { View, Text, TextInput, TouchableOpacity, Image } from 'react-native';
-import Constants from 'expo-constants';
-
-const StatusBarHeight = Constants.statusBarHeight;
+import { LinearGradient } from 'expo-linear-gradient';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export const Colors = {
-    primary: "#dadcdc",
-    secondary: "#FFFFFF",
-    tertiary: "#000000",
-    darkLight: "#000000",
-    brand: "#2563EB",
-    border: "#c2c5c5",
-    warning: "#ffd52c",
+    primary: "#0E0F11",     // app background (was light grey)
+    secondary: "#17191D",   // surface / cards (was white)
+    tertiary: "#FFFFFF",    // primary text (was black)
+    darkLight: "#8A9099",   // muted text (was black)
+    brand: "#2FB8FF",       // accent cyan (was blue)
+    border: "#23272C",      // hairline borders (was light grey)
+    warning: "#FFD52C",
     green: "#10B981",
     red: "#EF4444",
+    // Extra dark-theme tokens (safe to use alongside the originals)
+    background: "#0E0F11",
+    surfaceAlt: "#14171B",
+    textSecondary: "#C6CBD2",
+    teal: "#9EECD9",
+    onBrand: "#FFFFFF",
 };
 
 const { primary, secondary, tertiary, darkLight, brand, border, warning, green, red } = Colors;
 
-export const StyledContainer = styled.View`
-    flex: 1;
-    padding: 25px;
-    padding-top: ${StatusBarHeight + 10}px;
-    background-color: ${primary};
-`;
+/**
+ * Root screen container. Renders the signature dark vertical gradient used
+ * throughout the Inspo design. Accepts children and an optional style so it
+ * stays a drop-in replacement for the original styled.View.
+ */
+export const StyledContainer = ({ children, style }) => {
+    const insets = useSafeAreaInsets();
+
+    return (
+        <LinearGradient
+            colors={['#111417', '#0B0D0F', '#070809']}
+            locations={[0, 0.5, 1]}
+            style={[
+                {
+                    flex: 1,
+                    padding: 25,
+                    paddingTop: insets.top + 10,
+                    paddingBottom: insets.bottom + 10,
+                    backgroundColor: '#0E0F11',
+                },
+                style,
+            ]}
+        >
+            {children}
+        </LinearGradient>
+    );
+};
 
 export const InnerContainer = styled.View`
     flex: 1;
@@ -63,7 +89,9 @@ export const StyledTextInput = styled.TextInput`
     padding: 15px;
     padding-left: 55px;
     padding-right: 55px;
-    border-radius: 5px;
+    border-radius: 16px;
+    border-width: 1px;
+    border-color: ${border};
     font-size: 16px;
     height: 60px;
     margin-vertical: 3px;
@@ -72,10 +100,11 @@ export const StyledTextInput = styled.TextInput`
 `;
 
 export const StyledInputLabel = styled.Text`
-    color: ${tertiary};
+    color: ${darkLight};
     font-size: 13px;
     text-align: left;
     margin-bottom: 5px;
+    font-weight: 600;
 `;
 
 
@@ -96,15 +125,20 @@ export const RightIcon = styled.TouchableOpacity`
 export const StyledButton = styled.TouchableOpacity`
     background-color: ${brand};
     padding: 15px;
-    border-radius: 5px;
+    border-radius: 40px;
     align-items: center;
     justify-content: center;
     margin-top: 20px;
     height: 60px;
+    shadow-color: #2FB8FF;
+    shadow-opacity: 0.45;
+    shadow-radius: 18px;
+    shadow-offset: 0px 6px;
+    elevation: 8;
 `;
 
 export const ButtonText = styled.Text`
-    color: ${secondary};
+    color: #FFFFFF;
     font-size: 16px;
     font-weight: bold;
 `;
@@ -119,7 +153,7 @@ export const ExtraView = styled.View`
 export const ExtraText = styled.Text`
     justify-content: center;
     align-content: center;
-    color: ${tertiary};
+    color: ${darkLight};
     font-size: 15px;
 `;
 
