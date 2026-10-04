@@ -26,6 +26,7 @@ const styles = {
     justifyContent: 'center',
     alignItems: 'center',
     padding: 24,
+    backgroundColor: '#0E0F11',
   },
   message: {
     marginTop: 12,
