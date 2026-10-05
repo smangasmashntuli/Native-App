@@ -35,10 +35,18 @@ const Home = ({ navigation }) => {
 
           <FadeInDown delay={140}>
           <View style={{ width: '100%', borderRadius: 24, overflow: 'hidden', marginBottom: 22, backgroundColor: '#14171B', borderWidth: 1, borderColor: '#23272C' }}>
-            <Image
-              source={{ uri: activeDevice.image }}
-              style={{ width: '100%', height: 220, resizeMode: 'cover' }}
-            />
+            {activeDevice.image ? (
+              <Image
+                source={{ uri: activeDevice.image }}
+                style={{ width: '100%', height: 220 }}
+                resizeMode="cover"
+              />
+            ) : (
+              <View style={{ width: '100%', height: 220, backgroundColor: '#1E2227', alignItems: 'center', justifyContent: 'center' }}>
+                <MaterialCommunityIcons name="laptop" size={48} color="#3A4048" />
+                <Text style={{ color: '#8A9099', fontSize: 12, marginTop: 8 }}>Laptop image unavailable</Text>
+              </View>
+            )}
             <View style={{ position: 'absolute', left: 16, right: 16, bottom: 16 }}>
               <Text style={{ color: '#FFFFFF', fontSize: 16, fontWeight: '700', marginBottom: 4 }}>Active Hardware Unit</Text>
               <Text style={{ color: '#FFFFFF', fontSize: 22, fontWeight: '800' }}>{activeDevice.name}</Text>

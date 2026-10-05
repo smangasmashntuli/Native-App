@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
   card: {
     width: '100%',
     maxWidth: 520,
-    backgroundColor: '#17191D',
+    backgroundColor: '#090909',
     borderRadius: 24,
     padding: 24,
     maxHeight: '85%',
@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
   closeButton: {
     marginTop: 10,
     alignSelf: 'center',
-    backgroundColor: '#2FB8FF',
+    backgroundColor: '#FFFFFF',
     borderRadius: 16,
     paddingHorizontal: 32,
     paddingVertical: 14,
