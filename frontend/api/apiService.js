@@ -36,6 +36,7 @@ const normalizeEndpoint = (endpoint) => {
 const api = {
     async request(endpoint, method = 'GET', data = null, requiresAuth = false) {
         const url = `${API_BASE_URL}${normalizeEndpoint(endpoint)}`;
+        let responseStatus = null;
         const headers = {
             'Content-Type': 'application/json',
         };
@@ -57,13 +58,19 @@ const api = {
 
         try{
             const response = await fetch(url, config);
+            responseStatus = response.status;
             const responseData = await response.json();
             if (!response.ok) {
+                if (response.status === 401 && requiresAuth) {
+                    await AsyncStorage.removeItem('access_token');
+                }
                 throw new Error(responseData.detail || 'API request failed');
             }
             return responseData;
         } catch (error) {
-            console.error('API request failed:', error);
+            if (responseStatus !== 401) {
+                console.error('API request failed:', error);
+            }
             throw error;
         }
 
